@@ -221,7 +221,7 @@ public class DataManager {
 	public User getUserByID(int userID) {
 		// DONE(Zhu) searchUserByID
 		for (User user : users) {
-			if(user.getID()==userID){
+			if(user.getID() == userID){
 				return user;
 			}
 		}
@@ -231,7 +231,7 @@ public class DataManager {
 	public City getCityByID(int cityID) {
 		// DONE(Zhu) searchCityByID
 		for (City city : cities) {
-			if (city.getCityID()==cityID) {
+			if (city.getCityID() == cityID) {
 				return city;
 			}
 		}

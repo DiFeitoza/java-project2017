@@ -10,7 +10,7 @@ public class City implements Serializable {
 	 */
 	private static final long serialVersionUID = -1847989476070817692L;
 	public static int ID = 0; //ID is just the count of cities
-	private int cityID; //cityID needn't changing
+	private int cityID; //cityID need n't changing
 	private String cityName;
 	protected ArrayList<FlightDaemon> flightsIn; // flights end in this city
 	protected ArrayList<FlightDaemon> flightsOut; // flights start in this city

@@ -384,58 +384,58 @@ public class Main {
 			input = scanner.nextLine().replace(" ", "").split("=");
 			try {	
 				switch (input[0]) {
-				case "name":
-					flight.setFlightName(input[1]);
-					System.out.println("Succeed!");
-					break;
-				case "starttime":
-					String[] sdate = input[1].split("-");
-					flight.setStartTime(Flight.calendar(
-							Integer.valueOf(sdate[0]), 
-							Integer.valueOf(sdate[1]), 
-							Integer.valueOf(sdate[2]), 
-							Integer.valueOf(sdate[3]), 
-							Integer.valueOf(sdate[4]),
-							Integer.valueOf(sdate[5])));
-					System.out.println("Succeed!");
-					break;
-				case "arrivetime":
-					String[] adate = input[1].split("-");
-					flight.setArriveTime(Flight.calendar(
-							Integer.valueOf(adate[0]), 
-							Integer.valueOf(adate[1]), 
-							Integer.valueOf(adate[2]), 
-							Integer.valueOf(adate[3]), 
-							Integer.valueOf(adate[4]),
-							Integer.valueOf(adate[5])));
-					System.out.println("Succeed!");
-					break;
-				case "startcity":
-					flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
-					System.out.println("Succeed!");
-					break;
-				case "arrivecity":
-					flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
-					System.out.println("Succeed!");
-					break;
-				case "price":
-					flight.setPrice(Integer.valueOf(input[1]));
-					System.out.println("Succeed!");
-					break;
-				case "capacity":
-					flight.setSeatCapacity(Integer.valueOf(input[1]));
-					System.out.println("Succeed!");
-					break;
-				case "distance":
-					flight.setDistance(Integer.valueOf(input[1]));
-					System.out.println("Succeed!");
-					break;
-				case "exit":
-				case "e":
-					break;
-				default:
-					System.out.println("Command error");
-					break;
+					case "name":
+						flight.setFlightName(input[1]);
+						System.out.println("Succeed!");
+						break;
+					case "starttime":
+						String[] sdate = input[1].split("-");
+						flight.setStartTime(Flight.calendar(
+								Integer.valueOf(sdate[0]), 
+								Integer.valueOf(sdate[1]), 
+								Integer.valueOf(sdate[2]), 
+								Integer.valueOf(sdate[3]), 
+								Integer.valueOf(sdate[4]),
+								Integer.valueOf(sdate[5])));
+						System.out.println("Succeed!");
+						break;
+					case "arrivetime":
+						String[] adate = input[1].split("-");
+						flight.setArriveTime(Flight.calendar(
+								Integer.valueOf(adate[0]), 
+								Integer.valueOf(adate[1]), 
+								Integer.valueOf(adate[2]), 
+								Integer.valueOf(adate[3]), 
+								Integer.valueOf(adate[4]),
+								Integer.valueOf(adate[5])));
+						System.out.println("Succeed!");
+						break;
+					case "startcity":
+						flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
+						System.out.println("Succeed!");
+						break;
+					case "arrivecity":
+						flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
+						System.out.println("Succeed!");
+						break;
+					case "price":
+						flight.setPrice(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "capacity":
+						flight.setSeatCapacity(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "distance":
+						flight.setDistance(Integer.valueOf(input[1]));
+						System.out.println("Succeed!");
+						break;
+					case "exit":
+					case "e":
+						break;
+					default:
+						System.out.println("Command error");
+						break;
 				}
 			} catch (IndexOutOfBoundsException | NumberFormatException e) {
 				System.out.println("Format error");
@@ -667,9 +667,9 @@ public class Main {
 	private static void addAdmin() {
 		// DONE(Peng) addAdmin UI
 		System.out.print("Please enter the Username : ");
-		String userName=scanner.nextLine();
+		String userName = scanner.nextLine();
 		System.out.print("Please enter the password : ");
-		String password=scanner.nextLine();
+		String password = scanner.nextLine();
 		try {
 			server.addAdmin(userName, password);
 			System.out.println("Added successfully");
@@ -682,13 +682,13 @@ public class Main {
 		// DONE(Zhu) register UI
 		System.out.print("Please input your username: ");
 		String username;
-		username=scanner.nextLine();
+		username = scanner.nextLine();
 		System.out.print("Please input your identity card number: ");
 		String idNumber;
-		idNumber=scanner.nextLine();
-		while(idNumber.length()>18||idNumber.length()<18){
-			System.out.print("Please input the correct identity card number: ");
-		idNumber=scanner.nextLine();
+		idNumber = scanner.nextLine();
+		while(idNumber.length() > 18 || idNumber.length() < 18){
+			System.out.print("Please input the correct identity card number, 18 characters: ");
+		idNumber = scanner.nextLine();
 		}
 		String password,password2;
 		System.out.print("Please input your password: ");
