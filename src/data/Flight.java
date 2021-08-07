@@ -81,10 +81,18 @@ public class Flight implements Serializable {
 	
 	public static Date calendar(int year, int month, int date, int hr, int min, int sec) {
 		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+8:00"));
-		calendar.clear();
+		clearCalendar(calendar);
 		calendar.set(year, month - 1, date, hr, min, sec);
+		return getTimeCalendar(calendar);
+	}
+	
+	public static void clearCalendar(Calendar calendar) {
+		calendar.clear();
+	}
+	public static Date getTimeCalendar(Calendar calendar) {
 		return calendar.getTime();
 	}
+	
 	/* DONE(Zhu) get and set in Flight
 	 * getter and setter are generated automatically, and need mortifying
 	 * basically the restriction is flightStatus(seeing requirement)
