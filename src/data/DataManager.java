@@ -196,22 +196,41 @@ public class DataManager {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void readData() throws FileNotFoundException, IOException, ClassNotFoundException {
 		ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file));
 		data = (Data) stream.readObject();
 		stream.close();
 		ArrayList<ArrayList<?>> list = data.readOut();
-		users = (ArrayList<User>) list.get(0);
-		cities = (ArrayList<City>) list.get(1);
-		flights = (ArrayList<Flight>) list.get(2);
-		flightDaemons = (ArrayList<FlightDaemon>) list.get(3);
+		users = readDataUsers(list);
+		cities = readDataCities(list);
+		flights = readDataFlights(list);
+		flightDaemons = readDataDaemons(list);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<User> readDataUsers(ArrayList<ArrayList<?>> list) {
+		return (ArrayList<User>) list.get(0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<City> readDataCities(ArrayList<ArrayList<?>> list) {
+		return (ArrayList<City>) list.get(1);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<Flight> readDataFlights(ArrayList<ArrayList<?>> list) {
+		return (ArrayList<Flight>) list.get(2);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<FlightDaemon> readDataDaemons(ArrayList<ArrayList<?>> list) {
+		return (ArrayList<FlightDaemon>) list.get(3);
 	}
 
 	public Flight getFlightByID(int flightID) {
 		// DONE(Zhu) searchFlightByID
 		for (Flight flight : flights) {
-			if(flight.getFlightID()==flightID){
+			if(flight.getFlightID() == flightID){
 				return flight;
 			}
 		}
@@ -240,7 +259,7 @@ public class DataManager {
 
 	public FlightDaemon getFlightDaemonByID(int flightID) {
 		for (FlightDaemon daemon : flightDaemons) {
-			if (daemon.getFlightDaemonID()==flightID) {
+			if (daemon.getFlightDaemonID() == flightID) {
 				return daemon;
 			}
 		}
