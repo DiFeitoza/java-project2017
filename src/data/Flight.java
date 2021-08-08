@@ -75,7 +75,23 @@ public class Flight implements Serializable {
         return hashCode;
 	}
 	
-	public int getNumber() {
+	public boolean flightStatusIsAvaliable() {
+		return flightStatus == FlightStatus.AVAILABLE ? true : false;
+	}
+	
+	public boolean flightStatusIsUnpublished() {
+		return flightStatus == FlightStatus.UNPUBLISHED ? true : false;
+	}
+	
+	public boolean flightStatusIsFull() {
+		return flightStatus == FlightStatus.FULL ? true : false;
+	}
+	
+	public boolean flightStatusIsTerminate() {
+		return flightStatus == FlightStatus.TERMINATE ? true : false;
+	}
+	
+	public int getPassagersSize() {
 		return passagers.size();
 	}
 	
@@ -107,7 +123,7 @@ public class Flight implements Serializable {
 	}
 	
 	public void setFlightName(String flightName) throws StatusUnavailableException {
-		if(flightStatus==FlightStatus.UNPUBLISHED){
+		if(flightStatusIsUnpublished()){
 			this.flightName = flightName;
 		}else{
 			throw new StatusUnavailableException(flightStatus);
@@ -119,7 +135,7 @@ public class Flight implements Serializable {
 	}
 
 	public void setStartTime(Date startTime) throws StatusUnavailableException {
-		if(flightStatus==FlightStatus.UNPUBLISHED){
+		if(flightStatusIsUnpublished()){
 			this.startTime = startTime;
 		}else{
 			throw new StatusUnavailableException(flightStatus);
@@ -139,7 +155,7 @@ public class Flight implements Serializable {
 	}
 	
 	public void setArriveTime(Date arriveTime) throws StatusUnavailableException {
-		if(flightStatus==FlightStatus.UNPUBLISHED){
+		if(flightStatusIsUnpublished()){
 			this.arriveTime = arriveTime;
 		}else{
 			throw new StatusUnavailableException(flightStatus);
@@ -151,7 +167,7 @@ public class Flight implements Serializable {
 	}
 
 	public void setStartCity(City startCity) throws StatusUnavailableException {
-		if(flightStatus==FlightStatus.UNPUBLISHED){
+		if(flightStatusIsUnpublished()){
 			this.startCity = startCity;
 		}else{
 			throw new StatusUnavailableException(flightStatus);
@@ -163,7 +179,7 @@ public class Flight implements Serializable {
 	}
 
 	public void setArriveCity(City arriveCity) throws StatusUnavailableException {
-		if(flightStatus==FlightStatus.UNPUBLISHED){
+		if(flightStatusIsUnpublished()){
 			this.arriveCity = arriveCity;
 		}else{
 			throw new StatusUnavailableException(flightStatus);
@@ -175,7 +191,7 @@ public class Flight implements Serializable {
 	}
 
 	public void setPrice(int price) throws StatusUnavailableException {
-		if(flightStatus!=FlightStatus.TERMINATE){
+		if(!flightStatusIsTerminate()){
 			this.price = price;
 		}else{
 			throw new StatusUnavailableException(flightStatus);
@@ -187,11 +203,11 @@ public class Flight implements Serializable {
 	}
 
 	public void setSeatCapacity(int seatCapacity) throws StatusUnavailableException {
-		if(flightStatus!=FlightStatus.TERMINATE){
+		if(!flightStatusIsTerminate()){
 			// DONE(Zhu) you should consider more in changing seat capacity
-           if(flightStatus == FlightStatus.FULL &&
-        		   this.seatCapacity< seatCapacity){
-        	   this.seatCapacity=seatCapacity;
+           if(flightStatusIsFull() &&
+        		   this.seatCapacity < seatCapacity){
+        	   this.seatCapacity = seatCapacity;
            }else{
         	   throw new StatusUnavailableException("Set Failed!");
            }    
@@ -224,9 +240,9 @@ public class Flight implements Serializable {
 			 * for my convenience
 			 * and check for status
 			 */
-			if (flightStatus == FlightStatus.AVAILABLE) {
+			if (flightStatusIsAvaliable()) {
 				passagers.put(passenger, seat);
-				if (passagers.size() == seatCapacity) {
+				if (getPassagersSize() == seatCapacity) {
 					flightStatus = FlightStatus.FULL;
 				}
 			} else {
@@ -256,11 +272,11 @@ public class Flight implements Serializable {
 		 * and check for status
 		 * XXX(Zhu) needs review
 		 */
-		if(flightStatus!=FlightStatus.TERMINATE) {
+		if(!flightStatusIsTerminate()) {
 			if (passagers.remove(passenger) != null) {
-				if (passagers.size() < seatCapacity && flightStatus == FlightStatus.FULL) {
+				if (getPassagersSize() < seatCapacity && flightStatusIsFull()) {
 					flightStatus = FlightStatus.AVAILABLE;
-				} else if (passagers.size() == seatCapacity) {
+				} else if (getPassagersSize() == seatCapacity) {
 					flightStatus = FlightStatus.FULL;
 				}
 				return true;
@@ -275,7 +291,7 @@ public class Flight implements Serializable {
 		if (isDaemon) {
 			throw new StatusUnavailableException("the status of this flight is under control of server!");
 		}
-		if (flightStatus == FlightStatus.UNPUBLISHED) {
+		if (flightStatusIsUnpublished()) {
 			flightStatus = FlightStatus.AVAILABLE;
 		} else {
 			throw new StatusUnavailableException(flightStatus);
