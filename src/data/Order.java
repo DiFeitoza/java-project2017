@@ -32,6 +32,31 @@ public class Order implements Serializable {
 		flight.addPassenger(passenger);
 	}
 	
+	@Override
+	public int hashCode() {
+        return status.hashCode();
+	}
+	
+	@Override
+	public String toString() {
+		return String.format(
+			"----------------------------\n"
+			+ "Passenger: %s\n"
+			+ "Flight: %s\n"
+			+ "Seat: %s\n"
+			+ "Set Off Date: %s\n"
+			+ "Create Date: %s\n"
+			+ "Status: %s\n"
+			+ "----------------------------", 
+			passenger.userName,
+			existFlight() ? getFlightName() : "deleted",
+			isCancle() ? "null" : String.valueOf(getSeat()), 
+			existFlight() ? getFlightStartTime() : "flight deleted",
+			createDate.toString(),
+			status.name()
+		);
+	}
+	
 	public boolean isCancle() {
 		return status == OrderStatus.CANCLE ? true : false;
 	}
@@ -44,28 +69,8 @@ public class Order implements Serializable {
 		return status == OrderStatus.CANCLE ? true : false;
 	}
 	
-	@Override
-	public int hashCode() {
-        return status.hashCode();
-	}
-	
-	@Override
-	public String toString() {
-		return String.format(
-				"----------------------------\n"
-				+ "Passenger: %s\n"
-				+ "Flight: %s\n"
-				+ "Seat: %s\n"
-				+ "Set Off Date: %s\n"
-				+ "Create Date: %s\n"
-				+ "Status: %s\n"
-				+ "----------------------------", 
-				passenger.userName,
-				flight == null ? "deleted" : flight.getFlightName(),
-				isCancle() ? "null" : String.valueOf(getSeat()), 
-				flight == null ? "flight deleted" : flight.getStartTime().toString(),
-				createDate.toString(),
-				status.name());
+	public boolean existFlight() {
+		return flight != null ? true : false;
 	}
 	
 	public Passenger getPassager() {
@@ -73,11 +78,19 @@ public class Order implements Serializable {
 	}
 
 	public Integer getSeat() {
-		return flight == null ? null : flight.passagers().get(passenger);
+		return existFlight() ? flight.passagers().get(passenger) : null;
 	}
 
 	public Flight getFlight() {
 		return flight;
+	}
+	
+	public String getFlightName() {
+		return flight.getFlightName();
+	}
+	
+	public String getFlightStartTime() {
+		return flight.getStartTime().toString();
 	}
 
 	public Date getCreatDate() {
