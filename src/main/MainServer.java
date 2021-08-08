@@ -36,20 +36,13 @@ public class MainServer {
 	public boolean login(String userName, String pass) {
 		isLogin = false;
 		isAdmin = false;
-		currentUser = null;
-		for (User user : dataManager.users) {
-			if (user.getUserName().equals(userName) && user.getPassHash().equals(User.hashPass(pass))) {
-				isLogin = true;
-				if (user instanceof Admin) {					
-					isAdmin = true;
-				} else {
-					isAdmin = false;
-				}
-				currentUser = user;
-				return true;
-			} else {
-				isLogin = false;
+		currentUser = dataManager.validateUser(userName, pass);
+		if (currentUser != null) {
+			isLogin = true;
+			if (currentUser instanceof Admin) {					
+				isAdmin = true;
 			}
+			return true;
 		}
 		return false;
 	}

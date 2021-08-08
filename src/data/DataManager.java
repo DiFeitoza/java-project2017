@@ -226,6 +226,15 @@ public class DataManager {
 	public ArrayList<FlightDaemon> readDataDaemons(ArrayList<ArrayList<?>> list) {
 		return (ArrayList<FlightDaemon>) list.get(3);
 	}
+	
+	public User validateUser(String userName, String pass) {
+		for (User user : users) {
+			if (user.getUserName().equals(userName) && user.getPassHash().equals(User.hashPass(pass))) {
+				return user;
+			}
+		}
+		return null;
+	}
 
 	public Flight getFlightByID(int flightID) {
 		// DONE(Zhu) searchFlightByID
