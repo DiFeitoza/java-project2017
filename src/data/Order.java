@@ -31,7 +31,19 @@ public class Order implements Serializable {
 		status = OrderStatus.UNPAID;
 		flight.addPassenger(passenger);
 	}
-
+	
+	public boolean isCancle() {
+		return status == OrderStatus.CANCLE ? true : false;
+	}
+	
+	public boolean isPaid() {
+		return status == OrderStatus.PAID ? true : false;
+	}
+	
+	public boolean isUnpaid() {
+		return status == OrderStatus.CANCLE ? true : false;
+	}
+	
 	@Override
 	public int hashCode() {
         return status.hashCode();
@@ -50,7 +62,7 @@ public class Order implements Serializable {
 				+ "----------------------------", 
 				passenger.userName,
 				flight == null ? "deleted" : flight.getFlightName(),
-				status != OrderStatus.CANCLE ? String.valueOf(getSeat()) : "null", 
+				isCancle() ? "null" : String.valueOf(getSeat()), 
 				flight == null ? "flight deleted" : flight.getStartTime().toString(),
 				createDate.toString(),
 				status.name());
@@ -82,7 +94,7 @@ public class Order implements Serializable {
 	
 	protected void setStatus(OrderStatus status) {
 		this.status = status;
-		if (status == OrderStatus.CANCLE) {
+		if (isCancle()) {
 			for (Passenger passenger : flight.getPassagers().keySet()) {
 				if (passenger == this.passenger) {
 					flight.getPassagers().remove(passenger);
@@ -92,7 +104,7 @@ public class Order implements Serializable {
 	}
 	
 	public void pay() throws StatusUnavailableException {
-		if (status == OrderStatus.UNPAID) {
+		if (isUnpaid()) {
 			status = OrderStatus.PAID;
 		} else {
 			throw new StatusUnavailableException(status);
@@ -100,9 +112,9 @@ public class Order implements Serializable {
 	}
 	
 	public boolean cancle() throws StatusUnavailableException {
-		if (status != OrderStatus.CANCLE) {
+		if (!isCancle()) {
 			boolean re;
-			if (status == OrderStatus.PAID) {
+			if (isPaid()) {
 				re = true;
 			} else {
 				re = false;
@@ -117,7 +129,7 @@ public class Order implements Serializable {
 	
 	public void printOrder() throws StatusUnavailableException {
 		// DONE(Peng) printOrder
-		if (status==OrderStatus.PAID) {
+		if (isPaid()) {
 			System.out.println("Passager :" + getPassager());
 			System.out.println("Your Seat :" + getSeat());
 			System.out.println("Your Flight :" + getFlight());
@@ -131,7 +143,7 @@ public class Order implements Serializable {
 	}
 
 	public void remove() {
-		if (status != OrderStatus.CANCLE) {
+		if (!isCancle()) {
 			for (Passenger passenger : flight.getPassagers().keySet()) {
 				if (passenger == this.passenger) {
 					flight.getPassagers().remove(passenger);
