@@ -32,7 +32,7 @@ public class MainServer {
 	public void stop() {
 		dataManager.stop();
 	}
-	
+		
 	public boolean login(String userName, String pass) {
 		isLogin = false;
 		isAdmin = false;
@@ -80,9 +80,8 @@ public class MainServer {
 		// DONE(Peng) creatFlight
 		checkPermission(true);
 		try {
-			dataManager.flightDaemons.add(new FlightDaemon(flightName,startTime, arriveTime, period*24*3600*1000,
-					dataManager.getCityByID(startCityID),dataManager.getCityByID(arriveCityID),
-					price,seatCapacity, distence));
+			dataManager.flightDaemons.add(new FlightDaemon(flightName, startTime, arriveTime, period*24*3600*1000,
+				getCity(startCityID), getCity(arriveCityID), price, seatCapacity, distence));
 			return true;
 		} catch (NullPointerException e) {
 			return false;
@@ -316,7 +315,7 @@ public class MainServer {
 	public boolean dispalyUser(int userID) throws PermissionDeniedException {
 		// DONE(Zhu) print User order(if it is passenger) as well
 		checkPermission(true);
-		User u = dataManager.getUserByID(userID);
+		User u = dataManager.getUser(userID);
 		if (u == null) {
 			return false;
 		}
