@@ -264,16 +264,24 @@ public class MainServer {
 		System.out.printf("%d\t%s\n", city.getCityID(), city);
 	}
 
+	public void displayHeaderFlight() {
+		System.out.println("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tRemain\n");
+	}
+	
 	public void displayFlight() {
 		// DONE(Zhu) displayFlight
-		System.out.println("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tRemain\n");
+		displayHeaderFlight();
 		for(Flight fl : dataManager.flights)
 			System.out.println(fl);
 	}
 
+	public void displayHeaderDaemon() {
+		System.out.println("ID\tName\tStartCity\tArriveCity\tBeginTime\t\t\tTime\tPeriod\tPrice\tSeatCapacity");
+	}
+	
 	public void displayDaemon() {
 		// DONE(Zhu) displayDaemon
-		System.out.println("ID\tName\tStartCity\tArriveCity\tBeginTime\t\t\tTime\tPeriod\tPrice\tSeatCapacity");
+		displayHeaderDaemon();
 		for(FlightDaemon fd : dataManager.flightDaemons)
 			System.out.println(fd);
 	}
