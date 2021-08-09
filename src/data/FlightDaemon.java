@@ -75,6 +75,29 @@ public class FlightDaemon implements Serializable{
         return hashCode;
 	}
 
+	public boolean flightIsDaemon(Flight flight) {
+		return flight.isDaemon();
+	}
+	
+	public long getFlightStartTime(Flight flight) {
+		return flight.getStartTime().getTime();
+	}
+	
+	public void setFlightStartTime(Flight flight, Date date) {
+		try {
+			flight.setStartTime(date);
+		} catch (StatusUnavailableException e) { /* ignored */ }
+	}
+	
+	public long getFlightArriveTime(Flight flight) {
+		return flight.getArriveTime().getTime();
+	}
+	
+	public void setFlightArriveTime(Flight flight, Date date) {
+		try {
+			flight.setArriveTime(date);
+		} catch (StatusUnavailableException e) { /* ignored */ }
+	}
 	
 	public int getFlightDaemonID() {
 		return flightDaemonID;
@@ -102,16 +125,14 @@ public class FlightDaemon implements Serializable{
 	public Date getStartTime() {
 		return startTime;
 	}
-
+	
 	public void setStartTime(Date startTime) {
 		long shift = startTime.getTime() - this.startTime.getTime();
 		this.startTime = startTime;
 		for (Flight flight : children) {
-			try {
-				if (flight.isDaemon()) {
-					flight.setStartTime(new Date(flight.getStartTime().getTime() + shift));
-				}
-			} catch (StatusUnavailableException e) { /* ignored */ }		
+			if (flightIsDaemon(flight)) {
+				setFlightStartTime(flight, new Date(getFlightStartTime(flight) + shift));
+			}
 		}
 	}
 
@@ -123,11 +144,9 @@ public class FlightDaemon implements Serializable{
 		long shift = arriveTime.getTime() - this.arriveTime.getTime();		
 		this.arriveTime = arriveTime;
 		for (Flight flight : children) {
-			try {
-				if (flight.isDaemon()) {
-					flight.setArriveTime(new Date(flight.getArriveTime().getTime() + shift));
-				}
-			} catch (StatusUnavailableException e) { /* ignored */ }
+			if (flightIsDaemon(flight)) {
+				setFlightArriveTime(flight, new Date(getFlightArriveTime(flight) + shift));
+			}
 		}
 	}
 
@@ -223,7 +242,7 @@ public class FlightDaemon implements Serializable{
 
 	public void removeFlight() {
 		children.removeIf(new Predicate<Flight>() {
-
+			
 			@Override
 			public boolean test(Flight t) {
 				return t.flightStatus == FlightStatus.UNPUBLISHED;
