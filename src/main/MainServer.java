@@ -88,6 +88,11 @@ public class MainServer {
 		}
 	}
 	
+	public User getUser(int userID) throws PermissionDeniedException { //give you user to change freely
+		checkPermission(true);
+		return dataManager.getUserByID(userID);
+	}
+	
 	public Flight getFlight(int flightID) throws PermissionDeniedException { //give you flight to change freely
 		checkPermission(true);
 		return dataManager.getFlightByID(flightID);
@@ -163,7 +168,7 @@ public class MainServer {
 		 * **be sure to remove user from the flight**
 		 */
 		checkPermission(true);
-		User u = dataManager.getUserByID(userID);
+		User u = getUser(userID);
 		if (u == null) {
 			return false;
 		}
@@ -265,7 +270,7 @@ public class MainServer {
 			System.out.println(fd);
 	}
 
-	public void dispalyUser() throws PermissionDeniedException {
+	public void displayUser() throws PermissionDeniedException {
 		//DONE(Peng)
 		checkPermission(true);
 		StringBuilder resultbuilder = new StringBuilder();
@@ -312,10 +317,10 @@ public class MainServer {
 		}
 	}
 	
-	public boolean dispalyUser(int userID) throws PermissionDeniedException {
+	public boolean displayUser(int userID) throws PermissionDeniedException {
 		// DONE(Zhu) print User order(if it is passenger) as well
 		checkPermission(true);
-		User u = dataManager.getUser(userID);
+		User u = getUser(userID);
 		if (u == null) {
 			return false;
 		}

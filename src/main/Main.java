@@ -282,14 +282,14 @@ public class Main {
 				case "user":
 					if (param.length == 1) {
 						try {
-							server.dispalyUser();
+							server.displayUser();
 						} catch (PermissionDeniedException e) {
 							System.out.println(e.getMessage());
 						}							
 					} else {
 						for (int i = 1; i < param.length; i++) {
 							try {
-								if (!server.dispalyUser(Integer.valueOf(param[i]))) {
+								if (!server.displayUser(Integer.valueOf(param[i]))) {
 									System.out.printf("Can't find user with id '%s'\n", param[i]);
 								}
 							} catch (NumberFormatException e) {
