@@ -231,12 +231,16 @@ public class MainServer {
 		}
 	}
 	
+	public void removeCity(City city) {
+		dataManager.cities.remove(city);
+	}
+	
 	public boolean deleteCity(int cityID) throws PermissionDeniedException, StatusUnavailableException {
 		checkPermission(true);
-		City city = dataManager.getCityByID(cityID);
+		City city = getCity(cityID);
 		if (city != null) {
 			if (city.getFlightsIn().size() == 0 && city.getFlightsOut().size() == 0) {
-				dataManager.cities.remove(city);					
+				removeCity(city);					
 			} else {
 				throw new StatusUnavailableException("Cannot delete city that have fight in and out");
 			}
