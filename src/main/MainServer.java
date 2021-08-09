@@ -162,6 +162,10 @@ public class MainServer {
 		dataManager.cities.add(new City(cityName));
 	}
 	
+	public void removeUser(User user) {
+		dataManager.users.remove(user);
+	}
+	
 	public boolean deleteUser(int userID) throws PermissionDeniedException {
 		/* DONE(Peng) deleteUser
 		 * first to test if user is a passenger (using instanceof)
@@ -177,9 +181,9 @@ public class MainServer {
 			for (Order order : passenger.getOrderList()) {
 				order.remove();
 			}
-			dataManager.users.remove(u);
+			removeUser(u);
 		} else {
-			dataManager.users.remove(u);
+			removeUser(u);
 		}
 		return true;
 	}
