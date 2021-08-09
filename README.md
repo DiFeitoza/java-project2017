@@ -1,3 +1,12 @@
+# Trabalho da disciplina de Qualidade de Software do curso de Engenharia de Software da UFC Quixadá
+
+A proposta inicial foi encontrar um projeto aberto em java que possuísse pelo menos 40 code smells e que estes fossem de pelo menos 5 tipos diferentes.
+Para localizar os code smells foi utilizada a ferramenta Jspirit.
+
+Em seguida, foi realizada a coleta de métricas de qualide através da ferramenta Understand para analisar, posteriormente, através de novas coletas, o impacto que a refatorção de code smells, por tipo e ao todo, terá sobre a qualidade do software.
+
+Os resultados serão disponibilizados em planilha que será compartilhada aqui através de um link.
+
 # Flight-System
 
 This is the flight system project of 2017 Java Project in SUSTC
