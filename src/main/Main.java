@@ -43,7 +43,7 @@ public class Main {
 		String string = "";
 		String[] param;
 		while (!(string.equals("exit") || string.equals("e"))) {
-			System.out.print(">");
+			systemMessage(">");
 			string = scanner.nextLine();
 			string = string.replaceAll("\\s+", " ");
 			string = string.replaceAll("^\\s+", "");
@@ -185,13 +185,13 @@ public class Main {
 
 	private static void pay() {
 		try {
-			System.out.print("Please input your password: ");
+			systemMessage("Please input your password: ");
 			if (!server.checkPass(scanner.nextLine())) {
 				throw new PermissionDeniedException("Password Error");
 			}
 			server.displayOrder();
 			do {
-				System.out.print("please select the index of order to pay(-1 to exit): ");
+				systemMessage("please select the index of order to pay(-1 to exit): ");
 				try {
 					int index = Integer.valueOf(scanner.nextLine());
 					if (index == -1) {
@@ -219,13 +219,13 @@ public class Main {
 
 	private static void unsubscribe() {
 		try {
-			System.out.print("Please Input your password: ");
+			systemMessage("Please Input your password: ");
 			if (!server.checkPass(scanner.nextLine())) {
 				throw new PermissionDeniedException("Password Error");
 			}
 			server.displayOrder();
 			do {
-				System.out.print("please select the index of order to cancel(-1 to exit): ");
+				systemMessage("please select the index of order to cancel(-1 to exit): ");
 				try {
 					int index = Integer.valueOf(scanner.nextLine());
 					if (index == -1) {
@@ -303,7 +303,7 @@ public class Main {
 					}
 					break;
 				case "order":
-					System.out.print("Please Input your password: ");
+					systemMessage("Please Input your password: ");
 					if (!server.checkPass(scanner.nextLine())) {
 						throw new PermissionDeniedException("Password Error");
 					}
@@ -345,7 +345,7 @@ public class Main {
 	private static void login(String[] param) {
 		if (param != null && param.length == 2) {
 			if (server.login(param[0], param[1])) {
-				System.out.print("Login succeed: ");
+				systemMessage("Login succeed: ");
 				if (server.isAdmin()) {
 					systemMessage("You are administrator");
 				} else {
@@ -370,7 +370,7 @@ public class Main {
 		}
 		systemMessage("ID\tName\tStartCity\tArriveCity\tBeginTime\t\t\tTime\tPeriod\tPrice\tSeatCapacity");
 		System.out.println(server.getDaemon(flightID));
-		System.out.print("Usage: "
+		systemMessage("Usage: "
 				+ "\tname=newname\n"
 				+ "\tstarttime=yyyy-mm-dd-hr-mim-sec\n"
 				+ "\tarrivetime=yyyy-mm-dd-hr-mim-sec\n"
@@ -384,7 +384,7 @@ public class Main {
 		server.displayCity();
 		String[] input;
 		do {
-			System.out.print("Please input what to change: ");
+			systemMessage("Please input what to change: ");
 			input = scanner.nextLine().replace(" ", "").split("=");
 			try {	
 				switch (input[0]) {
@@ -585,7 +585,7 @@ public class Main {
 		int cityToId = -1;
 		Date date1 = null;
 		Date date2 = null;
-		System.out.print("welcome to search page! you can input: \n"
+		systemMessage("welcome to search page! you can input: \n"
 				+ "\tcity CityFromId-CityToId\n"
 				+ "\t\tset filter of city\n"
 				+ "\tcity -\n"
@@ -597,11 +597,11 @@ public class Main {
 				+ "\tavailibal city: \n");
 		server.displayCity();
 		do {
-			System.out.print("current filter: \n"
+			systemMessage("current filter: \n"
 					+ String.format("\tcity: %s-%s\n", cityFromId == -1 ? "unset" : String.valueOf(cityFromId), cityToId == -1 ? "unset" : String.valueOf(cityToId))
 					+ String.format("\tdate: %s~%s\n\n", date1 == null ? "unset" : date1.toString(), date2 == null ? "unset" : date2.toString())
 					+ "use 'print' or 'p' to print result\n");
-			System.out.print(">>");
+			systemMessage(">>");
 			String param;
 			String input = scanner.nextLine();
 			input = input.replaceAll("\\s+", " ");
@@ -670,9 +670,9 @@ public class Main {
 	
 	private static void addAdmin() {
 		// DONE(Peng) addAdmin UI
-		System.out.print("Please enter the Username : ");
+		systemMessage("Please enter the Username : ");
 		String userName = scanner.nextLine();
-		System.out.print("Please enter the password : ");
+		systemMessage("Please enter the password : ");
 		String password = scanner.nextLine();
 		try {
 			server.addAdmin(userName, password);
@@ -684,22 +684,22 @@ public class Main {
 
 	private static void register() {
 		// DONE(Zhu) register UI
-		System.out.print("Please input your username: ");
+		systemMessage("Please input your username: ");
 		String username;
 		username = scanner.nextLine();
-		System.out.print("Please input your identity card number: ");
+		systemMessage("Please input your identity card number: ");
 		String idNumber;
 		idNumber = scanner.nextLine();
 		while(idNumber.length() > 18 || idNumber.length() < 18){
-			System.out.print("Please input the correct identity card number, 18 characters: ");
+			systemMessage("Please input the correct identity card number, 18 characters: ");
 		idNumber = scanner.nextLine();
 		}
 		String password,password2;
-		System.out.print("Please input your password: ");
-		password=scanner.nextLine();
+		systemMessage("Please input your password: ");
+		password = scanner.nextLine();
 		do {
-			System.out.print("Please input your password again: ");
-		password2=scanner.nextLine();	
+			systemMessage("Please input your password again: ");
+		password2 = scanner.nextLine();	
 		} while (!(password.equals(password2)));		
 		server.addPassenger(username, idNumber, password2);
 		systemMessage("Succeed in creating your account!");
@@ -711,43 +711,43 @@ public class Main {
 		try {
 			systemMessage("Available City: ");
 			server.displayCity();
-			System.out.print("flightName： ");
-			String flightName=scanner.nextLine();
-			System.out.print("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
-			String[] startime=scanner.nextLine().split("-");
-			int year =Integer.parseInt(startime[0]);
-			int month =Integer.parseInt(startime[1]);
-			int date =Integer.parseInt(startime[2]);
-			int hr =Integer.parseInt(startime[3]);
-			int min =Integer.parseInt(startime[4]);
-			int sec =Integer.parseInt(startime[5]);
+			systemMessage("flightName: ");
+			String flightName = scanner.nextLine();
+			systemMessage("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
+			String[] startime = scanner.nextLine().split("-");
+			int year = Integer.parseInt(startime[0]);
+			int month = Integer.parseInt(startime[1]);
+			int date = Integer.parseInt(startime[2]);
+			int hr = Integer.parseInt(startime[3]);
+			int min = Integer.parseInt(startime[4]);
+			int sec = Integer.parseInt(startime[5]);
 			Date startTime = Flight.calendar(year, month, date, hr, min, sec);
-			System.out.print("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
+			systemMessage("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
 			String[] arrivetime=scanner.nextLine().split("-");
-			int year1 =Integer.parseInt(arrivetime[0]);
-			int month1 =Integer.parseInt(arrivetime[1]);
-			int date1 =Integer.parseInt(arrivetime[2]);
-			int hr1 =Integer.parseInt(arrivetime[3]);
-			int min1 =Integer.parseInt(arrivetime[4]);
-			int sec1 =Integer.parseInt(arrivetime[5]);
+			int year1 = Integer.parseInt(arrivetime[0]);
+			int month1 = Integer.parseInt(arrivetime[1]);
+			int date1 = Integer.parseInt(arrivetime[2]);
+			int hr1 = Integer.parseInt(arrivetime[3]);
+			int min1 = Integer.parseInt(arrivetime[4]);
+			int sec1 = Integer.parseInt(arrivetime[5]);
 			Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
 			if (arriveTime.before(startTime) || startTime.before(new Date())) {
 				throw new NumberFormatException();
 			}
-			System.out.print("Period of the flight(day)(0 for no period): ");
+			systemMessage("Period of the flight(day)(0 for no period): ");
 			int period = scanner.nextInt();
-			System.out.print("startCityID: ");
-			int startCityID=scanner.nextInt();
-			System.out.print("arriveCityID: ");
-			int arriveCityID=scanner.nextInt();
+			systemMessage("startCityID: ");
+			int startCityID = scanner.nextInt();
+			systemMessage("arriveCityID: ");
+			int arriveCityID = scanner.nextInt();
 			if (startCityID == arriveCityID) {
 				throw new NumberFormatException();
 			}
 			systemMessage("price");
-			int price=scanner.nextInt();
-			System.out.print("seatCapacity: ");
+			int price = scanner.nextInt();
+			systemMessage("seatCapacity: ");
 			int seatCapacity=scanner.nextInt();
-			System.out.print("distance(m): ");
+			systemMessage("distance(m): ");
 			int distance = scanner.nextInt();
 			scanner.nextLine();
 			if (!server.createFlightDaemon(flightName, startTime, arriveTime, period, startCityID, arriveCityID, price, seatCapacity, distance)) {
@@ -756,12 +756,12 @@ public class Main {
 					addFlight();
 				}
 			} else {
-				System.out.print("Flight added successfully\n");
+				systemMessage("Flight added successfully\n");
 			}
 		} catch (PermissionDeniedException e) {
 			systemMessage(e.getMessage());
 		} catch (IndexOutOfBoundsException | NumberFormatException | InputMismatchException e) {
-			System.out.print("Input error. retry?");
+			systemMessage("Input error. retry?");
 			if (scanner.nextLine().toLowerCase().equals("y")) {
 				addFlight();				
 			}
@@ -771,7 +771,7 @@ public class Main {
 	private static void addCity(String cityname) {
 		// DONE(Peng) addCity UI
 		if (cityname == null) {
-			System.out.print("Please enter a valid city name: ");
+			systemMessage("Please enter a valid city name: ");
 			cityname = scanner.nextLine();
 		}
 		try {
@@ -785,11 +785,11 @@ public class Main {
 	private static void printHelp(boolean isMini) {
 		// DONE(Dong) Help
 		if (isMini) {
-			System.out.print("Welcome to flight system!\n"
+			systemMessage("Welcome to flight system!\n"
 					+ "please use 'login [username] [password]' to login or use 'register' to register an account\n"
 					+ "type 'help' for more information.\n");
 		} else {
-			System.out.print("Usage: command [param...]\n"
+			systemMessage("Usage: command [param...]\n"
 					+ "Available command: \n\n"
 					+ "\tlogin|log [username] [password]\n"
 					+ "\t\tlogin with username and password\n\n"
@@ -809,7 +809,7 @@ public class Main {
 					+ "\t\tadd a city administrator or flight daemon(only for adminstrator)\n\n"
 					+ "\tdelete|d (city|user|flight|daemon) [ID1] [ID2] ....\n"
 					+ "\t\tdelete city, user, flight or flight daemon with specific ID(only for adminstrator)\n"
-					+ "\t\t\t**caution： delete flight daemon will also delete corresponding flight with status UNPUBLISHED\n\n"
+					+ "\t\t\t**caution: delete flight daemon will also delete corresponding flight with status UNPUBLISHED\n\n"
 					+ "\treserve|re [ID1] [ID2] ....\n"
 					+ "\t\treserve flights with specific ID\n\n"
 					+ "\tunsubscribe|unsub\n"
