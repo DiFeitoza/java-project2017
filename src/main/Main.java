@@ -37,28 +37,9 @@ public class Main {
 
 	static MainServer server;
 	static Scanner scanner;
-
-	public static void main(String[] args) {
-		// DONE(Dong) UI design
-		String string = "";
-		String[] param;
-		while (!(string.equals("exit") || string.equals("e"))) {
-			systemMessage(">");
-			string = scanner.nextLine();
-			string = string.replaceAll("\\s+", " ");
-			string = string.replaceAll("^\\s+", "");
-			string = string.replaceAll("\\s+$", "");
-			if (string.contains(" ")) {
-				String[] cmd = string.split(" ");
-				string = cmd[0];
-				param = new String[cmd.length - 1];
-				for (int i = 1; i < cmd.length; i++) {
-					param[i - 1] = cmd[i]; 
-				}
-			} else {
-				param = null;
-			}
-			switch (string) {
+	
+	public static void menu(String string, String[] param) {
+		switch(string) {
 			case "help":
 			case "h":
 				printHelp(false);
@@ -116,7 +97,30 @@ public class Main {
 					systemMessage("Unknown command: Type 'help' for more information.");
 				}
 				break;
+		}
+	}
+
+	public static void main(String[] args) {
+		// DONE(Dong) UI design
+		String string = "";
+		String[] param;
+		while (!(string.equals("exit") || string.equals("e"))) {
+			systemMessage(">");
+			string = scanner.nextLine();
+			string = string.replaceAll("\\s+", " ");
+			string = string.replaceAll("^\\s+", "");
+			string = string.replaceAll("\\s+$", "");
+			if (string.contains(" ")) {
+				String[] cmd = string.split(" ");
+				string = cmd[0];
+				param = new String[cmd.length - 1];
+				for (int i = 1; i < cmd.length; i++) {
+					param[i - 1] = cmd[i]; 
+				}
+			} else {
+				param = null;
 			}
+			menu(string, param);
 		}
 		scanner.close();
 		server.stop();
