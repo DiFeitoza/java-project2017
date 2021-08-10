@@ -113,13 +113,17 @@ public class Main {
 				break;
 			default:
 				if (!string.equals("")) {
-					System.out.println("Unknown command: Type 'help' for more information.");
+					systemMessage("Unknown command: Type 'help' for more information.");
 				}
 				break;
 			}
 		}
 		scanner.close();
 		server.stop();
+	}
+	
+	public static void systemMessage(String str) {
+		System.out.println("# " + str);
 	}
 	
 	/*
@@ -134,7 +138,7 @@ public class Main {
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight ID\n", param[1]);
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
+					systemMessage(e.getMessage());
 				}
 				break;
 			case "city":
@@ -142,40 +146,40 @@ public class Main {
 					City city = server.getCity(Integer.valueOf(param[1]));
 					if (city != null) {
 						city.setCityName(param[2]);
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 					} else {
-						System.out.println("Failed: no such city");
+						systemMessage("Failed: no such city");
 					}
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a city ID\n", param[0]);
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
+					systemMessage(e.getMessage());
 				}
 				break;
 			case "username":
 				try {
 					User user = server.getCurrentUser();
 					user.setUserName(param[1]);
-					System.out.println("Succeed!");
+					systemMessage("Succeed!");
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
+					systemMessage(e.getMessage());
 				}
 				break;
 			case "password":
 				try {
 					User user = server.getCurrentUser();
 					user.changePass(param[1]);
-					System.out.println("Succeed!");
+					systemMessage("Succeed!");
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
+					systemMessage(e.getMessage());
 				}
 				break;
 			default:
-				System.out.println("Please input what to change");
+				systemMessage("Please input what to change");
 				break;
 			}
 		} catch (NullPointerException | IndexOutOfBoundsException e) {
-			System.out.println("Format error: type 'help' for more information");
+			systemMessage("Format error: type 'help' for more information");
 		}		
 	}
 
@@ -193,23 +197,23 @@ public class Main {
 					if (index == -1) {
 						break;
 					}
-					System.out.println("Are you sure to pay this order?");
+					systemMessage("Are you sure to pay this order?");
 					if (scanner.nextLine().toLowerCase().equals("y")) {
 						server.pay(index);
-						System.out.println("Succeed!");						
+						systemMessage("Succeed!");						
 					} else {
-						System.out.println("Cancled");
+						systemMessage("Cancled");
 					}
 				} catch (NumberFormatException e) {
-					System.out.println("Please input the right index");
+					systemMessage("Please input the right index");
 				} catch (StatusUnavailableException e) {
-					System.out.println("Pay failed: " + e.getMessage());
+					systemMessage("Pay failed: " + e.getMessage());
 				} catch (IndexOutOfBoundsException e) {
-					System.out.println("Error: no such order");
+					systemMessage("Error: no such order");
 				}
 			} while (true);
 		} catch (PermissionDeniedException e) {
-			System.out.println(e.getMessage());
+			systemMessage(e.getMessage());
 		}
 	}
 
@@ -227,26 +231,26 @@ public class Main {
 					if (index == -1) {
 						break;
 					}
-					System.out.println("Are you sure to cancel this order?");
+					systemMessage("Are you sure to cancel this order?");
 					if (scanner.nextLine().toLowerCase().equals("y")) {
 						if (server.cancel(index)) {
-							System.out.println("Reserving money has returned");
+							systemMessage("Reserving money has returned");
 						}
-						System.out.println("Succeed!");	
+						systemMessage("Succeed!");	
 						
 					} else {
-						System.out.println("Operator canceld");
+						systemMessage("Operator canceld");
 					}
 				} catch (NumberFormatException e) {
-					System.out.println("Please input the right index");
+					systemMessage("Please input the right index");
 				} catch (StatusUnavailableException e) {
-					System.out.println("Cancel failed: " + e.getMessage());
+					systemMessage("Cancel failed: " + e.getMessage());
 				} catch (IndexOutOfBoundsException e) {
-					System.out.println("Error: no such order");
+					systemMessage("Error: no such order");
 				}
 			} while (true);
 		} catch (PermissionDeniedException e) {
-			System.out.println(e.getMessage());
+			systemMessage(e.getMessage());
 		}
 	}
 
@@ -284,7 +288,7 @@ public class Main {
 						try {
 							server.displayUser();
 						} catch (PermissionDeniedException e) {
-							System.out.println(e.getMessage());
+							systemMessage(e.getMessage());
 						}							
 					} else {
 						for (int i = 1; i < param.length; i++) {
@@ -306,14 +310,14 @@ public class Main {
 					server.displayOrder();
 					break;
 				default:
-					System.out.println("Format error: you can only list city, user, flight or order");
+					systemMessage("Format error: you can only list city, user, flight or order");
 					break;
 				}
 			} catch (PermissionDeniedException e) {
-				System.out.println(e.getMessage());
+				systemMessage(e.getMessage());
 			}								
 		} else {
-			System.out.println("Format error: please input what to list");
+			systemMessage("Format error: please input what to list");
 		}
 	}
 
@@ -334,7 +338,7 @@ public class Main {
 				}
 			} 
 		} else {
-			System.out.println("Format error: use 'publish [ID1] [ID2] ...' to publish flihgts");
+			systemMessage("Format error: use 'publish [ID1] [ID2] ...' to publish flihgts");
 		}
 	}
 
@@ -343,15 +347,15 @@ public class Main {
 			if (server.login(param[0], param[1])) {
 				System.out.print("Login succeed: ");
 				if (server.isAdmin()) {
-					System.out.println("You are administrator");
+					systemMessage("You are administrator");
 				} else {
-					System.out.println("You are passenger");
+					systemMessage("You are passenger");
 				}
 			} else {
-				System.out.println("Login failed");
+				systemMessage("Login failed");
 			}
 		} else {
-			System.out.println("Format error: please use 'login [username] [password]' to login");
+			systemMessage("Format error: please use 'login [username] [password]' to login");
 		}
 	}
 
@@ -361,10 +365,10 @@ public class Main {
 			System.out.printf("Cannot find flight daemon with ID '%d'\n", flightID);
 			return;
 		} else if (!flight.getStatus()) {
-			System.out.println("This flight has deleted");
+			systemMessage("This flight has deleted");
 			return;
 		}
-		System.out.println("ID\tName\tStartCity\tArriveCity\tBeginTime\t\t\tTime\tPeriod\tPrice\tSeatCapacity");
+		systemMessage("ID\tName\tStartCity\tArriveCity\tBeginTime\t\t\tTime\tPeriod\tPrice\tSeatCapacity");
 		System.out.println(server.getDaemon(flightID));
 		System.out.print("Usage: "
 				+ "\tname=newname\n"
@@ -386,7 +390,7 @@ public class Main {
 				switch (input[0]) {
 					case "name":
 						flight.setFlightName(input[1]);
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 						break;
 					case "starttime":
 						String[] sdate = input[1].split("-");
@@ -397,7 +401,7 @@ public class Main {
 								Integer.valueOf(sdate[3]), 
 								Integer.valueOf(sdate[4]),
 								Integer.valueOf(sdate[5])));
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 						break;
 					case "arrivetime":
 						String[] adate = input[1].split("-");
@@ -408,37 +412,37 @@ public class Main {
 								Integer.valueOf(adate[3]), 
 								Integer.valueOf(adate[4]),
 								Integer.valueOf(adate[5])));
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 						break;
 					case "startcity":
 						flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 						break;
 					case "arrivecity":
 						flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 						break;
 					case "price":
 						flight.setPrice(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 						break;
 					case "capacity":
 						flight.setSeatCapacity(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 						break;
 					case "distance":
 						flight.setDistance(Integer.valueOf(input[1]));
-						System.out.println("Succeed!");
+						systemMessage("Succeed!");
 						break;
 					case "exit":
 					case "e":
 						break;
 					default:
-						System.out.println("Command error");
+						systemMessage("Command error");
 						break;
 				}
 			} catch (IndexOutOfBoundsException | NumberFormatException e) {
-				System.out.println("Format error");
+				systemMessage("Format error");
 			}
 		} while (!(input[0].equals("e") || input[0].equals("exit")));
 	}
@@ -448,9 +452,9 @@ public class Main {
 			for (String para : param) {
 				try {
 					if (server.reserveFlight(Integer.parseInt(para))) {
-						System.out.println("succeed in " + para);
+						systemMessage("succeed in " + para);
 					} else {
-						System.out.println("no flight with id " + para);
+						systemMessage("no flight with id " + para);
 					}
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight id\n", para);
@@ -479,11 +483,11 @@ public class Main {
 				addAdmin();
 				break;
 			default:
-				System.out.println("You can only add a city, flight or admin");
+				systemMessage("You can only add a city, flight or admin");
 				break;
 			}
 		} else {
-			System.out.println("Format error: please use 'add (city|flight|admin)' or 'add city [cityname]' to add");
+			systemMessage("Format error: please use 'add (city|flight|admin)' or 'add city [cityname]' to add");
 		}
 	}
 
@@ -507,7 +511,7 @@ public class Main {
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
+					systemMessage(e.getMessage());
 				}
 				break;
 			case "daemon":
@@ -526,7 +530,7 @@ public class Main {
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
+					systemMessage(e.getMessage());
 				}
 				break;
 			case "city":
@@ -545,7 +549,7 @@ public class Main {
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
+					systemMessage(e.getMessage());
 				}
 				break;
 			case "user":
@@ -562,15 +566,15 @@ public class Main {
 						}
 					}
 				} catch (PermissionDeniedException e) {
-					System.out.println(e.getMessage());
+					systemMessage(e.getMessage());
 				}
 				break;
 			default:
-				System.out.println("You can only delete a city, flight or user");
+				systemMessage("You can only delete a city, flight or user");
 				break;
 			}
 		} else {
-			System.out.println("Format error: please use 'delete (city|flight|user) [ID1] [ID2] ...' to delete");
+			systemMessage("Format error: please use 'delete (city|flight|user) [ID1] [ID2] ...' to delete");
 		}
 	}
 
@@ -621,7 +625,7 @@ public class Main {
 						param.endsWith("-") ? -1 :
 							Integer.valueOf(cityid[1]);
 				} catch (NumberFormatException | IndexOutOfBoundsException e) {
-					System.out.println("City ID format error");
+					systemMessage("City ID format error");
 				}
 				break;
 			case "date":
@@ -647,7 +651,7 @@ public class Main {
 									Integer.valueOf(s1[1]),
 									Integer.valueOf(s1[2]), 0, 0, 0);
 				} catch (NumberFormatException | IndexOutOfBoundsException e) {
-					System.out.println("Date format error");
+					systemMessage("Date format error");
 				}
 				break;
 			case "exit":
@@ -658,7 +662,7 @@ public class Main {
 				server.search(cityFromId, cityToId, date1, date2);
 				break;
 			default:
-				System.out.println("unknown command");
+				systemMessage("unknown command");
 				break;
 			}
 		} while (!(cmd.equals("exit") || cmd.equals("e")));
@@ -672,9 +676,9 @@ public class Main {
 		String password = scanner.nextLine();
 		try {
 			server.addAdmin(userName, password);
-			System.out.println("Added successfully");
+			systemMessage("Added successfully");
 		} catch (PermissionDeniedException e) {
-			System.out.println(e.getMessage());
+			systemMessage(e.getMessage());
 		}
 	}
 
@@ -698,14 +702,14 @@ public class Main {
 		password2=scanner.nextLine();	
 		} while (!(password.equals(password2)));		
 		server.addPassenger(username, idNumber, password2);
-		System.out.println("Succeed in creating your account!");
+		systemMessage("Succeed in creating your account!");
 		
 	}
 
 	private static void addFlight() {
 		// DONE(Peng) addFlight UI
 		try {
-			System.out.println("Available City: ");
+			systemMessage("Available City: ");
 			server.displayCity();
 			System.out.print("flightName： ");
 			String flightName=scanner.nextLine();
@@ -739,7 +743,7 @@ public class Main {
 			if (startCityID == arriveCityID) {
 				throw new NumberFormatException();
 			}
-			System.out.println("price");
+			systemMessage("price");
 			int price=scanner.nextInt();
 			System.out.print("seatCapacity: ");
 			int seatCapacity=scanner.nextInt();
@@ -747,7 +751,7 @@ public class Main {
 			int distance = scanner.nextInt();
 			scanner.nextLine();
 			if (!server.createFlightDaemon(flightName, startTime, arriveTime, period, startCityID, arriveCityID, price, seatCapacity, distance)) {
-				System.out.println("Error in cityID. retry?");
+				systemMessage("Error in cityID. retry?");
 				if (scanner.nextLine().toLowerCase().equals("y")) {
 					addFlight();
 				}
@@ -755,7 +759,7 @@ public class Main {
 				System.out.print("Flight added successfully\n");
 			}
 		} catch (PermissionDeniedException e) {
-			System.out.println(e.getMessage());
+			systemMessage(e.getMessage());
 		} catch (IndexOutOfBoundsException | NumberFormatException | InputMismatchException e) {
 			System.out.print("Input error. retry?");
 			if (scanner.nextLine().toLowerCase().equals("y")) {
@@ -772,9 +776,9 @@ public class Main {
 		}
 		try {
 			server.addCity(cityname);
-			System.out.println("City added successfully");
+			systemMessage("City added successfully");
 		} catch (PermissionDeniedException e) {
-			System.out.println(e.getMessage());
+			systemMessage(e.getMessage());
 		}
 	}
 
