@@ -5,7 +5,9 @@ Para localizar os code smells foi utilizada a ferramenta Jspirit.
 
 Em seguida, foi realizada a coleta de métricas de qualide através da ferramenta Understand para analisar, posteriormente, através de novas coletas, o impacto que a refatorção de code smells, por tipo e ao todo, terá sobre a qualidade do software.
 
-Os resultados serão disponibilizados em planilha que será compartilhada aqui através de um link.
+As métricas de qualidade podem ser acessada pelo link: [Planilha - Métricas de Qualidade](https://docs.google.com/spreadsheets/d/1-aJ1as8LlpIXL8YOXBcI418V53fUXZeb3U4SoJxioVk/edit?usp=sharing)
+
+Também está sendo feito um relatório detalhado do impacto da refatoração nas métricas de qualidade, pode ser acessado pelo link: [Relatório Geral](https://docs.google.com/document/d/1ycL29iPPb8idW0zsHCac0QF3sq7UgibgdLJL9jtAgVs/edit?usp=sharing)
 
 # Flight-System
 
