@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 import data.City;
 import data.Flight;
-import data.FlightDaemon;
 import data.User;
 import exceptions.PermissionDeniedException;
 import exceptions.StatusUnavailableException;
@@ -34,10 +33,12 @@ public class Main {
 		server = new MainServer();
 		scanner = new Scanner(System.in);
 	}
-
+	
 	static MainServer server;
 	static Scanner scanner;
 	
+	static ControllerFlight ctrFlight = new ControllerFlight(server, scanner);
+
 	public static void menu(String string, String[] param) {
 		switch(string) {
 			case "help":
@@ -127,7 +128,7 @@ public class Main {
 	}
 	
 	public static void systemMessage(String str) {
-		System.out.println("# " + str);
+		System.out.println(str);
 	}
 	
 	/*
@@ -138,7 +139,7 @@ public class Main {
 			switch (param[0]) {
 			case "flight":
 				try {
-					changeFlight(Integer.valueOf(param[1]));
+					ctrFlight.changeFlight(Integer.valueOf(param[1]));
 				} catch (NumberFormatException e) {
 					System.out.printf("'%s' is not a flight ID\n", param[1]);
 				} catch (PermissionDeniedException e) {
@@ -362,95 +363,7 @@ public class Main {
 			systemMessage("Format error: please use 'login [username] [password]' to login");
 		}
 	}
-
-	private static void changeFlight(int flightID) throws PermissionDeniedException {
-		FlightDaemon flight = server.getDaemon(flightID);
-		if (flight == null) {
-			System.out.printf("Cannot find flight daemon with ID '%d'\n", flightID);
-			return;
-		} else if (!flight.getStatus()) {
-			systemMessage("This flight has deleted");
-			return;
-		}
-		systemMessage("ID\tName\tStartCity\tArriveCity\tBeginTime\t\t\tTime\tPeriod\tPrice\tSeatCapacity");
-		System.out.println(server.getDaemon(flightID));
-		systemMessage("Usage: "
-				+ "\tname=newname\n"
-				+ "\tstarttime=yyyy-mm-dd-hr-mim-sec\n"
-				+ "\tarrivetime=yyyy-mm-dd-hr-mim-sec\n"
-				+ "\tstartcity=cityID\n"
-				+ "\tarrivecity=cityID\n"
-				+ "\tprice=newprice\n"
-				+ "\tcapacity=newcapacity\n"
-				+ "\tdistance=newdistance\n"
-				+ "\texit|e\n"
-				+ "Available City: \n");
-		server.displayCity();
-		String[] input;
-		do {
-			systemMessage("Please input what to change: ");
-			input = scanner.nextLine().replace(" ", "").split("=");
-			try {	
-				switch (input[0]) {
-					case "name":
-						flight.setFlightName(input[1]);
-						systemMessage("Succeed!");
-						break;
-					case "starttime":
-						String[] sdate = input[1].split("-");
-						flight.setStartTime(Flight.calendar(
-								Integer.valueOf(sdate[0]), 
-								Integer.valueOf(sdate[1]), 
-								Integer.valueOf(sdate[2]), 
-								Integer.valueOf(sdate[3]), 
-								Integer.valueOf(sdate[4]),
-								Integer.valueOf(sdate[5])));
-						systemMessage("Succeed!");
-						break;
-					case "arrivetime":
-						String[] adate = input[1].split("-");
-						flight.setArriveTime(Flight.calendar(
-								Integer.valueOf(adate[0]), 
-								Integer.valueOf(adate[1]), 
-								Integer.valueOf(adate[2]), 
-								Integer.valueOf(adate[3]), 
-								Integer.valueOf(adate[4]),
-								Integer.valueOf(adate[5])));
-						systemMessage("Succeed!");
-						break;
-					case "startcity":
-						flight.setStartCity(server.getCity(Integer.valueOf(input[1])));
-						systemMessage("Succeed!");
-						break;
-					case "arrivecity":
-						flight.setArriveCity(server.getCity(Integer.valueOf(input[1])));
-						systemMessage("Succeed!");
-						break;
-					case "price":
-						flight.setPrice(Integer.valueOf(input[1]));
-						systemMessage("Succeed!");
-						break;
-					case "capacity":
-						flight.setSeatCapacity(Integer.valueOf(input[1]));
-						systemMessage("Succeed!");
-						break;
-					case "distance":
-						flight.setDistance(Integer.valueOf(input[1]));
-						systemMessage("Succeed!");
-						break;
-					case "exit":
-					case "e":
-						break;
-					default:
-						systemMessage("Command error");
-						break;
-				}
-			} catch (IndexOutOfBoundsException | NumberFormatException e) {
-				systemMessage("Format error");
-			}
-		} while (!(input[0].equals("e") || input[0].equals("exit")));
-	}
-
+	
 	private static void reserve(String[] param) {
 		if (param != null && param.length >= 1) {
 			for (String para : param) {
