@@ -58,7 +58,23 @@ public class DataManager {
 	}
 	
 	class CreateFlight extends TimerTask {
-
+		
+		public void createFlight(FlightDaemon flightDaemon, long i) {
+			Flight flight = new Flight(
+					flightDaemon.getFlightName(), 
+					new Date(i), 
+					new Date(i + flightDaemon.getArriveTime().getTime() - flightDaemon.getStartTime().getTime()), 
+					flightDaemon.getStartCity(), 
+					flightDaemon.getArriveCity(), 
+					flightDaemon.getPrice(), 
+					flightDaemon.getSeatCapacity(), 
+					flightDaemon.getDistance()
+				);
+				flight.setDaemon(true);
+				flights.add(flight);
+				flightDaemon.children.add(flight);
+		}
+		
 		@Override
 		public void run() {
 			for (FlightDaemon flightDaemon : flightDaemons) {
@@ -79,18 +95,7 @@ public class DataManager {
 						}
 					}
 					if (!isCreated) {
-						Flight flight = new Flight(
-								flightDaemon.getFlightName(), 
-								new Date(i), 
-								new Date(i + flightDaemon.getArriveTime().getTime() - flightDaemon.getStartTime().getTime()), 
-								flightDaemon.getStartCity(), 
-								flightDaemon.getArriveCity(), 
-								flightDaemon.getPrice(), 
-								flightDaemon.getSeatCapacity(), 
-								flightDaemon.getDistance());
-						flight.setDaemon(true);
-						flights.add(flight);
-						flightDaemon.children.add(flight);
+						createFlight(flightDaemon, i);
 					}
 				}
 			}
