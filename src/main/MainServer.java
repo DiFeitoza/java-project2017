@@ -368,10 +368,32 @@ public class MainServer {
 	}
 
 	//------------boundary-----------------
+	
+	private ArrayList<Flight> searchActiveFlights(long bdate, long edate) {
+		ArrayList<Flight> flights = new ArrayList<>();
+		for (Flight flight : dataManager.flights) {
+			if (flight.getStartTime().getTime() >= bdate 
+					&& flight.getStartTime().getTime() <= edate 
+					&& flight.getFlightStatus() != FlightStatus.TERMINATE) {
+				flights.add(flight);
+			}
+		}
+		return flights;
+	}
+	
+	private String stringSearchFlights(City from, City to, ArrayList<Flight> flights) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tRemain\n");
+		for (Flight flight : flights) {
+			if (flight.getStartCity().equals(from) && flight.getArriveCity().equals(to)) {
+				builder.append(flight.toString() + "\n");
+			}
+		}
+		return builder.toString();
+	}
 
 	public void search(int cityFromId, int cityToId, Date date1, Date date2) {
 		// DONE(Dong) give up...
-		StringBuilder builder = new StringBuilder();
 		City from = dataManager.getCityByID(cityFromId);
 		City to = dataManager.getCityByID(cityToId);
 		long bdate;
@@ -386,21 +408,8 @@ public class MainServer {
 		} else {
 			edate = date2.getTime();
 		}
-		ArrayList<Flight> flights = new ArrayList<>();
-		for (Flight flight : dataManager.flights) {
-			if (flight.getStartTime().getTime() >= bdate 
-					&& flight.getStartTime().getTime() <= edate 
-					&& flight.getFlightStatus() != FlightStatus.TERMINATE) {
-				flights.add(flight);
-			}
-		}
-		builder.append("ID\tName\tStartCity\tArriveCity\tStartTime\t\t\tArriveTime\t\t\tPrice\tRemain\n");
-		for (Flight flight : flights) {
-			if (flight.getStartCity().equals(from) && flight.getArriveCity().equals(to)) {
-				builder.append(flight.toString() + "\n");
-			}
-		}
-		System.out.print(builder);
+		ArrayList<Flight> flights = searchActiveFlights(bdate, edate);
+		System.out.print(stringSearchFlights(from, to, flights));
 	}
 	
 	public void search(String flightName) {
