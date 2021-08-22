@@ -29,30 +29,38 @@ public class ControllerFlight {
 		return scanner.nextLine();
 	}
 	
+	protected Date scanStartTime() {
+		systemMessage("Please enter the Starttime, formatted with: year-month-date-hr-min-sec: ");
+		String[] startime = scanNextLine().split("-");
+		int year = Integer.parseInt(startime[0]);
+		int month = Integer.parseInt(startime[1]);
+		int date = Integer.parseInt(startime[2]);
+		int hr = Integer.parseInt(startime[3]);
+		int min = Integer.parseInt(startime[4]);
+		int sec = Integer.parseInt(startime[5]);
+		return Flight.calendar(year, month, date, hr, min, sec);
+	}
+	
+	protected Date scanArriveTime() {
+		systemMessage("Please enter the arrivetime, formatted with: year-month-date-hr-min-sec: ");
+		String[] arrivetime = scanNextLine().split("-");
+		int year1 = Integer.parseInt(arrivetime[0]);
+		int month1 = Integer.parseInt(arrivetime[1]);
+		int date1 = Integer.parseInt(arrivetime[2]);
+		int hr1 = Integer.parseInt(arrivetime[3]);
+		int min1 = Integer.parseInt(arrivetime[4]);
+		int sec1 = Integer.parseInt(arrivetime[5]);
+		return Flight.calendar(year1, month1, date1, hr1, min1, sec1);
+	}
+	
 	protected void addFlight(){
 		try {
 			systemMessage("Available City: ");
 			server.displayCity();
 			systemMessage("flightName: ");
 			String flightName = scanNextLine();
-			systemMessage("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
-			String[] startime = scanNextLine().split("-");
-			int year = Integer.parseInt(startime[0]);
-			int month = Integer.parseInt(startime[1]);
-			int date = Integer.parseInt(startime[2]);
-			int hr = Integer.parseInt(startime[3]);
-			int min = Integer.parseInt(startime[4]);
-			int sec = Integer.parseInt(startime[5]);
-			Date startTime = Flight.calendar(year, month, date, hr, min, sec);
-			systemMessage("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
-			String[] arrivetime = scanNextLine().split("-");
-			int year1 = Integer.parseInt(arrivetime[0]);
-			int month1 = Integer.parseInt(arrivetime[1]);
-			int date1 = Integer.parseInt(arrivetime[2]);
-			int hr1 = Integer.parseInt(arrivetime[3]);
-			int min1 = Integer.parseInt(arrivetime[4]);
-			int sec1 = Integer.parseInt(arrivetime[5]);
-			Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
+			Date startTime = scanStartTime();
+			Date arriveTime = scanArriveTime();
 			if (arriveTime.before(startTime) || startTime.before(new Date())) {
 				throw new NumberFormatException();
 			}
@@ -88,62 +96,6 @@ public class ControllerFlight {
 				addFlight();				
 			}
 		}
-	}
-	
-	protected void changeFlight(int flightID) throws PermissionDeniedException {
-		FlightDaemon flight = serverGetDaemon(flightID);
-		if (flight == null) { return; }
-		String[] input;
-		do {
-			systemMessage("Please input what to change: ");
-			input = scanner.nextLine().replace(" ", "").split("=");
-			int i = strToInteger(input[1]);
-			try {	
-				switch (input[0]) {
-					case "name":
-						setFlightName(flight, input[1]);
-						systemMessage("Succeed!");
-						break;
-					case "starttime":
-						String[] sdate = input[1].split("-");
-						setFlightStartTime(flight, sdate);
-						systemMessage("Succeed!");
-						break;
-					case "arrivetime":
-						String[] adate = input[1].split("-");
-						setFlightArriveTime(flight, adate);
-						systemMessage("Succeed!");
-						break;
-					case "startcity":
-						flightSetStartCity(flight, i);
-						break;
-					case "arrivecity":
-						flightSetArriveCity(flight, i);
-						systemMessage("Succeed!");
-						break;
-					case "price":
-						flightSetPrice(flight, i);
-						systemMessage("Succeed!");
-						break;
-					case "capacity":
-						flighSetSeatCapacity(flight, i);
-						systemMessage("Succeed!");
-						break;
-					case "distance":
-						flightSetDistance(flight, i);
-						systemMessage("Succeed!");
-						break;
-					case "exit":
-					case "e":
-						break;
-					default:
-						systemMessage("Command error");
-						break;
-				}
-			} catch (IndexOutOfBoundsException | NumberFormatException e) {
-				systemMessage("Format error");
-			}
-		} while (!(input[0].equals("e") || input[0].equals("exit")));
 	}
 	
 	private FlightDaemon serverGetDaemon(int flightID) throws PermissionDeniedException {
@@ -217,4 +169,61 @@ public class ControllerFlight {
 	private void flightSetStartCity(FlightDaemon flight, int i) throws PermissionDeniedException {
 		flight.setStartCity(server.getCity(i));
 	}
+	
+	protected void changeFlight(int flightID) throws PermissionDeniedException {
+		FlightDaemon flight = serverGetDaemon(flightID);
+		if (flight == null) { return; }
+		String[] input;
+		do {
+			systemMessage("Please input what to change: ");
+			input = scanner.nextLine().replace(" ", "").split("=");
+			int i = strToInteger(input[1]);
+			try {	
+				switch (input[0]) {
+					case "name":
+						setFlightName(flight, input[1]);
+						systemMessage("Succeed!");
+						break;
+					case "starttime":
+						String[] sdate = input[1].split("-");
+						setFlightStartTime(flight, sdate);
+						systemMessage("Succeed!");
+						break;
+					case "arrivetime":
+						String[] adate = input[1].split("-");
+						setFlightArriveTime(flight, adate);
+						systemMessage("Succeed!");
+						break;
+					case "startcity":
+						flightSetStartCity(flight, i);
+						break;
+					case "arrivecity":
+						flightSetArriveCity(flight, i);
+						systemMessage("Succeed!");
+						break;
+					case "price":
+						flightSetPrice(flight, i);
+						systemMessage("Succeed!");
+						break;
+					case "capacity":
+						flighSetSeatCapacity(flight, i);
+						systemMessage("Succeed!");
+						break;
+					case "distance":
+						flightSetDistance(flight, i);
+						systemMessage("Succeed!");
+						break;
+					case "exit":
+					case "e":
+						break;
+					default:
+						systemMessage("Command error");
+						break;
+				}
+			} catch (IndexOutOfBoundsException | NumberFormatException e) {
+				systemMessage("Format error");
+			}
+		} while (!(input[0].equals("e") || input[0].equals("exit")));
+	}
+	
 }
