@@ -40,6 +40,19 @@ public abstract class User implements Serializable {
 		return userName;
 	}
 	
+	public static String hexString(MessageDigest m) {
+		byte messageDigest[] = m.digest();
+		StringBuffer hexString = new StringBuffer();
+		for (int i = 0; i < messageDigest.length; i++) {
+			String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
+			if (shaHex.length() < 2) {
+				hexString.append(0);
+			}
+			hexString.append(shaHex);
+		}
+		return hexString.toString();
+	}
+	
 	public static String hashPass(String password) {
 	    if (password  ==  null || password.length() == 0){
 	        return null;
@@ -47,16 +60,7 @@ public abstract class User implements Serializable {
 		try {
 			MessageDigest m = MessageDigest.getInstance("SHA-1");
 			m.update(password.getBytes());
-			byte messageDigest[] = m.digest();
-			StringBuffer hexString = new StringBuffer();
-			for (int i = 0; i < messageDigest.length; i++) {
-				String shaHex = Integer.toHexString(messageDigest[i] & 0xFF);
-				if (shaHex.length() < 2) {
-					hexString.append(0);
-				}
-				hexString.append(shaHex);
-			}
-			return hexString.toString();
+			return hexString(m);
 		} catch (NoSuchAlgorithmException e) { /* impossible! */ }
 		return null;
 	}
