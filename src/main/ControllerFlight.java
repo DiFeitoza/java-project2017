@@ -1,5 +1,7 @@
 package main;
 
+import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import data.Flight;
@@ -21,6 +23,71 @@ public class ControllerFlight {
 	
 	private static Integer strToInteger(String str) {
 		return Integer.valueOf(str);
+	}
+	
+	private String scanNextLine() {
+		return scanner.nextLine();
+	}
+	
+	protected void addFlight(){
+		try {
+			systemMessage("Available City: ");
+			server.displayCity();
+			systemMessage("flightName: ");
+			String flightName = scanNextLine();
+			systemMessage("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
+			String[] startime = scanNextLine().split("-");
+			int year = Integer.parseInt(startime[0]);
+			int month = Integer.parseInt(startime[1]);
+			int date = Integer.parseInt(startime[2]);
+			int hr = Integer.parseInt(startime[3]);
+			int min = Integer.parseInt(startime[4]);
+			int sec = Integer.parseInt(startime[5]);
+			Date startTime = Flight.calendar(year, month, date, hr, min, sec);
+			systemMessage("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
+			String[] arrivetime = scanNextLine().split("-");
+			int year1 = Integer.parseInt(arrivetime[0]);
+			int month1 = Integer.parseInt(arrivetime[1]);
+			int date1 = Integer.parseInt(arrivetime[2]);
+			int hr1 = Integer.parseInt(arrivetime[3]);
+			int min1 = Integer.parseInt(arrivetime[4]);
+			int sec1 = Integer.parseInt(arrivetime[5]);
+			Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
+			if (arriveTime.before(startTime) || startTime.before(new Date())) {
+				throw new NumberFormatException();
+			}
+			systemMessage("Period of the flight(day)(0 for no period): ");
+			int period = scanner.nextInt();
+			systemMessage("startCityID: ");
+			int startCityID = scanner.nextInt();
+			systemMessage("arriveCityID: ");
+			int arriveCityID = scanner.nextInt();
+			if (startCityID == arriveCityID) {
+				throw new NumberFormatException();
+			}
+			systemMessage("price");
+			int price = scanner.nextInt();
+			systemMessage("seatCapacity: ");
+			int seatCapacity=scanner.nextInt();
+			systemMessage("distance(m): ");
+			int distance = scanner.nextInt();
+			scanNextLine();
+			if (!server.createFlightDaemon(flightName, startTime, arriveTime, period, startCityID, arriveCityID, price, seatCapacity, distance)) {
+				systemMessage("Error in cityID. retry?");
+				if (scanNextLine().toLowerCase().equals("y")) {
+					addFlight();
+				}
+			} else {
+				systemMessage("Flight added successfully\n");
+			}
+		} catch (PermissionDeniedException e) {
+			systemMessage(e.getMessage());
+		} catch (IndexOutOfBoundsException | NumberFormatException | InputMismatchException e) {
+			systemMessage("Input error. retry?");
+			if (scanNextLine().toLowerCase().equals("y")) {
+				addFlight();				
+			}
+		}
 	}
 	
 	protected void changeFlight(int flightID) throws PermissionDeniedException {

@@ -1,7 +1,5 @@
 package main;
 
-import java.util.Date;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import data.City;
@@ -37,6 +35,7 @@ public class Main {
 	static Scanner scanner;
 	static MainServer server;
 	static MainSearch search = new MainSearch(server, scanner);
+	static MainCRUD crud = new MainCRUD(server, scanner);
 	static ControllerFlight ctrFlight = new ControllerFlight(server, scanner);
 
 	public static void menu(String string, String[] param) {
@@ -264,70 +263,7 @@ public class Main {
 	}
 
 	private static void list(String[] param) {
-		if (param != null && param.length >= 1) {
-			try {
-				switch (param[0]) {
-				case "city":
-					if (param.length == 1) {
-						server.displayCity();
-					} else {
-						for (int i = 1; i < param.length; i++) {
-							server.displayCity(Integer.valueOf(param[i]));
-						}
-					}
-					break;
-				case "flight":
-					if (param.length == 1) {
-						server.displayFlight();						
-					} else {
-						for (int i = 1; i < param.length; i++) {
-							try {
-								server.displayFlight(Integer.valueOf(param[i]));
-							} catch (NumberFormatException e) {
-								System.out.printf("'%s' is not a flight\n", param[i]);
-							}								
-						}
-					}						
-					break;
-				case "daemon":
-					server.displayDaemon();						
-					break;
-				case "user":
-					if (param.length == 1) {
-						try {
-							server.displayUser();
-						} catch (PermissionDeniedException e) {
-							systemMessage(e.getMessage());
-						}							
-					} else {
-						for (int i = 1; i < param.length; i++) {
-							try {
-								if (!server.displayUser(Integer.valueOf(param[i]))) {
-									System.out.printf("Can't find user with id '%s'\n", param[i]);
-								}
-							} catch (NumberFormatException e) {
-								System.out.printf("'%s' is not a user id.\n", param[i]);
-							}
-						}
-					}
-					break;
-				case "order":
-					systemMessage("Please Input your password: ");
-					if (!server.checkPass(scanNextLine())) {
-						throw new PermissionDeniedException("Password Error");
-					}
-					server.displayOrder();
-					break;
-				default:
-					systemMessage("Format error: you can only list city, user, flight or order");
-					break;
-				}
-			} catch (PermissionDeniedException e) {
-				systemMessage(e.getMessage());
-			}								
-		} else {
-			systemMessage("Format error: please input what to list");
-		}
+		crud.list(param);
 	}
 
 	private static void pub(String[] param) {
@@ -414,89 +350,7 @@ public class Main {
 
 	private static void delete(String[] param) {
 		// DONE(Dong) delete
-		if (param != null && param.length >= 2) {
-			switch (param[0]) {
-			case "flight":
-				try {
-					for (int i = 1; i < param.length; i++) {
-						try {
-							if (server.deleteFlight(Integer.parseInt(param[i]))) {
-								System.out.printf("Successfully delete flight '%s'!\n", param[i]);
-							} else {
-								System.out.printf("Delete flight '%s' failed: no such flight\n", param[i]);
-							}
-						} catch (NumberFormatException e) {
-							System.out.printf("'%s' is not a flight id!\n", param[i]);
-						} catch (StatusUnavailableException e) {
-							System.out.printf("Delete flight '%s' failed: %s\n", param[i], e.getMessage());
-						}
-					}
-				} catch (PermissionDeniedException e) {
-					systemMessage(e.getMessage());
-				}
-				break;
-			case "daemon":
-				try {
-					for (int i = 1; i < param.length; i++) {
-						try {
-							if (server.deleteFlightDaemon(Integer.parseInt(param[i]))) {
-								System.out.printf("Successfully delete flight daemon '%s'!\n", param[i]);
-							} else {
-								System.out.printf("Delete flight daemon '%s' failed: no such flight daemon\n", param[i]);
-							}
-						} catch (NumberFormatException e) {
-							System.out.printf("'%s' is not a flight daemon id!\n", param[i]);
-						} catch (StatusUnavailableException e) {
-							System.out.printf("Delete flight daemon '%s' failed: %s\n", param[i], e.getMessage());
-						}
-					}
-				} catch (PermissionDeniedException e) {
-					systemMessage(e.getMessage());
-				}
-				break;
-			case "city":
-				try {
-					for (int i = 1; i < param.length; i++) {
-						try {
-							if (server.deleteCity(Integer.parseInt(param[i]))) {
-								System.out.printf("Successfully delete city '%s'!\n", param[i]);
-							} else {
-								System.out.printf("Delete city '%s' failed: no such city\n", param[i]);
-							}
-						} catch (NumberFormatException e) {
-							System.out.printf("'%s' is not a city id!\n", param[i]);
-						} catch (StatusUnavailableException e) {
-							System.out.printf("Delete city '%s' failed: %s\n", param[i], e.getMessage());
-						}
-					}
-				} catch (PermissionDeniedException e) {
-					systemMessage(e.getMessage());
-				}
-				break;
-			case "user":
-				try {
-					for (int i = 1; i < param.length; i++) {
-						try {
-							if (server.deleteUser(Integer.parseInt(param[i]))) {
-								System.out.printf("Successfully delete user '%s'!\n", param[i]);
-							} else {
-								System.out.printf("Delete user '%s' failed: no such user\n", param[i]);
-							}
-						} catch (NumberFormatException e) {
-							System.out.printf("'%s' is not a user id!\n", param[i]);
-						}
-					}
-				} catch (PermissionDeniedException e) {
-					systemMessage(e.getMessage());
-				}
-				break;
-			default:
-				systemMessage("You can only delete a city, flight or user");
-				break;
-			}
-		} else {
-			systemMessage("Format error: please use 'delete (city|flight|user) [ID1] [ID2] ...' to delete");
-		}
+		crud.delete(param);
 	}
 
 	private static void search() {
@@ -543,64 +397,7 @@ public class Main {
 
 	private static void addFlight() {
 		// DONE(Peng) addFlight UI
-		try {
-			systemMessage("Available City: ");
-			server.displayCity();
-			systemMessage("flightName: ");
-			String flightName = scanNextLine();
-			systemMessage("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
-			String[] startime = scanNextLine().split("-");
-			int year = Integer.parseInt(startime[0]);
-			int month = Integer.parseInt(startime[1]);
-			int date = Integer.parseInt(startime[2]);
-			int hr = Integer.parseInt(startime[3]);
-			int min = Integer.parseInt(startime[4]);
-			int sec = Integer.parseInt(startime[5]);
-			Date startTime = Flight.calendar(year, month, date, hr, min, sec);
-			systemMessage("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
-			String[] arrivetime = scanNextLine().split("-");
-			int year1 = Integer.parseInt(arrivetime[0]);
-			int month1 = Integer.parseInt(arrivetime[1]);
-			int date1 = Integer.parseInt(arrivetime[2]);
-			int hr1 = Integer.parseInt(arrivetime[3]);
-			int min1 = Integer.parseInt(arrivetime[4]);
-			int sec1 = Integer.parseInt(arrivetime[5]);
-			Date arriveTime = Flight.calendar(year1, month1, date1, hr1, min1, sec1);
-			if (arriveTime.before(startTime) || startTime.before(new Date())) {
-				throw new NumberFormatException();
-			}
-			systemMessage("Period of the flight(day)(0 for no period): ");
-			int period = scanner.nextInt();
-			systemMessage("startCityID: ");
-			int startCityID = scanner.nextInt();
-			systemMessage("arriveCityID: ");
-			int arriveCityID = scanner.nextInt();
-			if (startCityID == arriveCityID) {
-				throw new NumberFormatException();
-			}
-			systemMessage("price");
-			int price = scanner.nextInt();
-			systemMessage("seatCapacity: ");
-			int seatCapacity=scanner.nextInt();
-			systemMessage("distance(m): ");
-			int distance = scanner.nextInt();
-			scanNextLine();
-			if (!server.createFlightDaemon(flightName, startTime, arriveTime, period, startCityID, arriveCityID, price, seatCapacity, distance)) {
-				systemMessage("Error in cityID. retry?");
-				if (scanNextLine().toLowerCase().equals("y")) {
-					addFlight();
-				}
-			} else {
-				systemMessage("Flight added successfully\n");
-			}
-		} catch (PermissionDeniedException e) {
-			systemMessage(e.getMessage());
-		} catch (IndexOutOfBoundsException | NumberFormatException | InputMismatchException e) {
-			systemMessage("Input error. retry?");
-			if (scanNextLine().toLowerCase().equals("y")) {
-				addFlight();				
-			}
-		}
+		ctrFlight.addFlight();
 	}
 	
 	private static void addCity(String cityname) {
