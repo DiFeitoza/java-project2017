@@ -11,6 +11,7 @@ import data.Flight;
 import data.FlightDaemon;
 import data.FlightStatus;
 import data.Order;
+import data.OrderStatus;
 import data.Passenger;
 import data.User;
 import exceptions.PermissionDeniedException;
@@ -297,6 +298,25 @@ public class MainServer {
 		System.out.print(resultbuilder);
 	}
 	
+	private Flight getFlightOrder(Order order){
+		return order.getFlight();
+	}
+	
+	private OrderStatus getStatusOrder(Order order){
+		return order.getStatus();
+	}
+	
+	private StringBuilder displayFlightOrders(Flight flight, Passenger passenger) {
+		StringBuilder resultbuilder = new StringBuilder();
+		for (Order order : passenger.getOrderList()) {
+			if (getFlightOrder(order).equals(flight)) {
+				String status = getStatusOrder(order).name();
+				resultbuilder.append("\t\t" + passenger.toString() + "\t" + status + "\n");
+			}
+		}
+		return resultbuilder;
+	}
+	
 	public void displayFlight(int flightID) {
 		// DONE(Dong)
 		StringBuilder resultbuilder = new StringBuilder();
@@ -305,16 +325,12 @@ public class MainServer {
 		if (isAdmin) {
 			resultbuilder.append("\tPasengers:\n");
 			for (Passenger passenger : flight.passagers().keySet()) {
-				for (Order order : passenger.getOrderList()) {
-					if (order.getFlight().equals(flight)) {
-						String status = order.getStatus().name();
-						resultbuilder.append("\t\t" + passenger.toString() + "\t" + status + "\n");
-					}
-				}
+				resultbuilder.append(displayFlightOrders(flight, passenger));
 			}
 		}
 		System.out.print(resultbuilder);
 	}
+	
 	/*
 	 * when it comes to display a object with specific id, you need provide more specific information(see above)
 	 */
