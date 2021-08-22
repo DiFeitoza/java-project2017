@@ -107,7 +107,7 @@ public class Main {
 		String[] param;
 		while (!(string.equals("exit") || string.equals("e"))) {
 			systemMessage(">");
-			string = scanner.nextLine();
+			string = scanNextLine();
 			string = string.replaceAll("\\s+", " ");
 			string = string.replaceAll("^\\s+", "");
 			string = string.replaceAll("\\s+$", "");
@@ -127,8 +127,12 @@ public class Main {
 		server.stop();
 	}
 	
-	public static void systemMessage(String str) {
+	private static void systemMessage(String str) {
 		System.out.println(str);
+	}
+	
+	private static String scanNextLine() {
+		return scanner.nextLine();
 	}
 	
 	/*
@@ -191,19 +195,19 @@ public class Main {
 	private static void pay() {
 		try {
 			systemMessage("Please input your password: ");
-			if (!server.checkPass(scanner.nextLine())) {
+			if (!server.checkPass(scanNextLine())) {
 				throw new PermissionDeniedException("Password Error");
 			}
 			server.displayOrder();
 			do {
 				systemMessage("please select the index of order to pay(-1 to exit): ");
 				try {
-					int index = Integer.valueOf(scanner.nextLine());
+					int index = Integer.valueOf(scanNextLine());
 					if (index == -1) {
 						break;
 					}
 					systemMessage("Are you sure to pay this order?");
-					if (scanner.nextLine().toLowerCase().equals("y")) {
+					if (scanNextLine().toLowerCase().equals("y")) {
 						server.pay(index);
 						systemMessage("Succeed!");						
 					} else {
@@ -225,19 +229,19 @@ public class Main {
 	private static void unsubscribe() {
 		try {
 			systemMessage("Please Input your password: ");
-			if (!server.checkPass(scanner.nextLine())) {
+			if (!server.checkPass(scanNextLine())) {
 				throw new PermissionDeniedException("Password Error");
 			}
 			server.displayOrder();
 			do {
 				systemMessage("please select the index of order to cancel(-1 to exit): ");
 				try {
-					int index = Integer.valueOf(scanner.nextLine());
+					int index = Integer.valueOf(scanNextLine());
 					if (index == -1) {
 						break;
 					}
 					systemMessage("Are you sure to cancel this order?");
-					if (scanner.nextLine().toLowerCase().equals("y")) {
+					if (scanNextLine().toLowerCase().equals("y")) {
 						if (server.cancel(index)) {
 							systemMessage("Reserving money has returned");
 						}
@@ -309,7 +313,7 @@ public class Main {
 					break;
 				case "order":
 					systemMessage("Please Input your password: ");
-					if (!server.checkPass(scanner.nextLine())) {
+					if (!server.checkPass(scanNextLine())) {
 						throw new PermissionDeniedException("Password Error");
 					}
 					server.displayOrder();
@@ -502,9 +506,9 @@ public class Main {
 	private static void addAdmin() {
 		// DONE(Peng) addAdmin UI
 		systemMessage("Please enter the Username : ");
-		String userName = scanner.nextLine();
+		String userName = scanNextLine();
 		systemMessage("Please enter the password : ");
-		String password = scanner.nextLine();
+		String password = scanNextLine();
 		try {
 			server.addAdmin(userName, password);
 			systemMessage("Added successfully");
@@ -517,20 +521,20 @@ public class Main {
 		// DONE(Zhu) register UI
 		systemMessage("Please input your username: ");
 		String username;
-		username = scanner.nextLine();
+		username = scanNextLine();
 		systemMessage("Please input your identity card number: ");
 		String idNumber;
-		idNumber = scanner.nextLine();
+		idNumber = scanNextLine();
 		while(idNumber.length() > 18 || idNumber.length() < 18){
 			systemMessage("Please input the correct identity card number, 18 characters: ");
-		idNumber = scanner.nextLine();
+		idNumber = scanNextLine();
 		}
 		String password,password2;
 		systemMessage("Please input your password: ");
-		password = scanner.nextLine();
+		password = scanNextLine();
 		do {
 			systemMessage("Please input your password again: ");
-		password2 = scanner.nextLine();	
+		password2 = scanNextLine();	
 		} while (!(password.equals(password2)));		
 		server.addPassenger(username, idNumber, password2);
 		systemMessage("Succeed in creating your account!");
@@ -543,9 +547,9 @@ public class Main {
 			systemMessage("Available City: ");
 			server.displayCity();
 			systemMessage("flightName: ");
-			String flightName = scanner.nextLine();
+			String flightName = scanNextLine();
 			systemMessage("Please enter the Starttime,formatted with : year-month-date-hr-min-sec: ");
-			String[] startime = scanner.nextLine().split("-");
+			String[] startime = scanNextLine().split("-");
 			int year = Integer.parseInt(startime[0]);
 			int month = Integer.parseInt(startime[1]);
 			int date = Integer.parseInt(startime[2]);
@@ -554,7 +558,7 @@ public class Main {
 			int sec = Integer.parseInt(startime[5]);
 			Date startTime = Flight.calendar(year, month, date, hr, min, sec);
 			systemMessage("Please enter the arrivetime,formatted with : year-month-date-hr-min-sec: ");
-			String[] arrivetime=scanner.nextLine().split("-");
+			String[] arrivetime = scanNextLine().split("-");
 			int year1 = Integer.parseInt(arrivetime[0]);
 			int month1 = Integer.parseInt(arrivetime[1]);
 			int date1 = Integer.parseInt(arrivetime[2]);
@@ -580,10 +584,10 @@ public class Main {
 			int seatCapacity=scanner.nextInt();
 			systemMessage("distance(m): ");
 			int distance = scanner.nextInt();
-			scanner.nextLine();
+			scanNextLine();
 			if (!server.createFlightDaemon(flightName, startTime, arriveTime, period, startCityID, arriveCityID, price, seatCapacity, distance)) {
 				systemMessage("Error in cityID. retry?");
-				if (scanner.nextLine().toLowerCase().equals("y")) {
+				if (scanNextLine().toLowerCase().equals("y")) {
 					addFlight();
 				}
 			} else {
@@ -593,7 +597,7 @@ public class Main {
 			systemMessage(e.getMessage());
 		} catch (IndexOutOfBoundsException | NumberFormatException | InputMismatchException e) {
 			systemMessage("Input error. retry?");
-			if (scanner.nextLine().toLowerCase().equals("y")) {
+			if (scanNextLine().toLowerCase().equals("y")) {
 				addFlight();				
 			}
 		}
@@ -603,7 +607,7 @@ public class Main {
 		// DONE(Peng) addCity UI
 		if (cityname == null) {
 			systemMessage("Please enter a valid city name: ");
-			cityname = scanner.nextLine();
+			cityname = scanNextLine();
 		}
 		try {
 			server.addCity(cityname);
