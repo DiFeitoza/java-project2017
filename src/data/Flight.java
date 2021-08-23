@@ -20,28 +20,22 @@ public class Flight implements Serializable {
 	public static int ID = 0;
 	private int flightID;
 	private String flightName;
-	private Date startTime;
-	private Date arriveTime;
-	private City startCity;
-	private City arriveCity;
-	private int price;
-	private int seatCapacity;
 	protected FlightStatus flightStatus;
 	private HashMap<Passenger, Integer> passagers;
-	private int distance;
+	private FlightData data = new FlightData();
 	private boolean isDaemon;
 	
 	public Flight(String flightName, Date startTime, Date arriveTime, City startCity, City arriveCity, int price,
 			int seatCapacity, int distance) {
 		passagers = new HashMap<>();
 		this.flightName = flightName;
-		this.startTime = startTime;
-		this.arriveTime = arriveTime;
-		this.startCity = startCity;
-		this.arriveCity = arriveCity;
-		this.price = price;
-		this.seatCapacity = seatCapacity;
-		this.distance = distance;
+		this.data.setStartTime(startTime);
+		this.data.setArriveTime(arriveTime);
+		this.data.setStartCity(startCity);
+		this.data.setArriveCity(arriveCity);
+		this.data.setPrice(price);
+		this.data.setSeatCapacity(seatCapacity);
+		this.data.setDistance(distance);
 		this.flightStatus = FlightStatus.UNPUBLISHED;
 		isDaemon = true;
 		flightID = Flight.ID;
@@ -50,29 +44,12 @@ public class Flight implements Serializable {
 	
 	@Override
 	public String toString() {
-		return String.valueOf(flightID) + "\t" +
-				flightName + "\t" + 
-				((startCity.toString().length() < 8) ? (startCity.toString() + "\t") : startCity.toString()) + "\t" +
-				((arriveCity.toString().length() < 8) ? (arriveCity.toString() + "\t") : arriveCity.toString()) + "\t" +
-				startTime.toString() + "\t" +
-				arriveTime.toString() + "\t" +
-				String.valueOf(price) + "\t" +
-				String.valueOf(seatCapacity - passagers.size()) + "\t" +
-				flightStatus.name();
+		return data.toString(flightID, flightName, passagers.size(), flightStatus);
 	}
 	
 	@Override
 	public int hashCode() {
-        int hashCode = 1;
-        hashCode = 31*hashCode + flightName.hashCode();
-        hashCode = 31*hashCode + startCity.hashCode();
-        hashCode = 31*hashCode + startTime.hashCode();
-        hashCode = 31*hashCode + arriveCity.hashCode();
-        hashCode = 31*hashCode + arriveTime.hashCode();
-        hashCode = 31*hashCode + flightStatus.hashCode();
-        hashCode = 31*hashCode + ((Integer)price).hashCode();
-        hashCode = 31*hashCode + ((Integer)seatCapacity).hashCode();
-        return hashCode;
+        return data.hashCode(flightName, flightStatus);
 	}
 	
 	public boolean flightStatusIsAvaliable() {
@@ -131,83 +108,83 @@ public class Flight implements Serializable {
 	}
 
 	public Date getStartTime() {
-		return startTime;
+		return data.getStartTime();
 	}
 
 	public void setStartTime(Date startTime) throws StatusUnavailableException {
 		if(flightStatusIsUnpublished()){
-			this.startTime = startTime;
+			this.data.setStartTime(startTime);
 		}else{
 			throw new StatusUnavailableException(flightStatus);
 		}
 	}
 
 	public Date getArriveTime() {
-		return arriveTime;
+		return data.getArriveTime();
 	}
 
 	public int getDistance() {
-		return distance;
+		return data.getDistance();
 	}
 	
 	public void setDistance(int distance) {
-		this.distance = distance;
+		this.data.setDistance(distance);
 	}
 	
 	public void setArriveTime(Date arriveTime) throws StatusUnavailableException {
 		if(flightStatusIsUnpublished()){
-			this.arriveTime = arriveTime;
+			this.data.setArriveTime(arriveTime);
 		}else{
 			throw new StatusUnavailableException(flightStatus);
 		}
 	}
 
 	public City getStartCity() {
-		return startCity;
+		return data.getStartCity();
 	}
 
 	public void setStartCity(City startCity) throws StatusUnavailableException {
 		if(flightStatusIsUnpublished()){
-			this.startCity = startCity;
+			this.data.setStartCity(startCity);
 		}else{
 			throw new StatusUnavailableException(flightStatus);
 		}
 	}
 
 	public City getArriveCity() {
-		return arriveCity;
+		return data.getArriveCity();
 	}
 
 	public void setArriveCity(City arriveCity) throws StatusUnavailableException {
 		if(flightStatusIsUnpublished()){
-			this.arriveCity = arriveCity;
+			this.data.setArriveCity(arriveCity);
 		}else{
 			throw new StatusUnavailableException(flightStatus);
 		}
 	}
 
 	public int getPrice() {
-		return price;
+		return data.getPrice();
 	}
 
 	public void setPrice(int price) throws StatusUnavailableException {
 		if(!flightStatusIsTerminate()){
-			this.price = price;
+			this.data.setPrice(price);
 		}else{
 			throw new StatusUnavailableException(flightStatus);
 		}
 	}
 
 	public int getSeatCapacity() {
-		return seatCapacity;
+		return data.getSeatCapacity();
 	}
 
 	public void setSeatCapacity(int seatCapacity) throws StatusUnavailableException {
 		if(!flightStatusIsTerminate()){
 			// DONE(Zhu) you should consider more in changing seat capacity
            if(flightStatusIsFull() &&
-        		   this.seatCapacity < seatCapacity){
-        	   this.seatCapacity = seatCapacity;
+        		   this.data.getSeatCapacity() < seatCapacity){
+        	   this.data.setSeatCapacity(seatCapacity);
            }else{
         	   throw new StatusUnavailableException("Set Failed!");
            }    
@@ -242,7 +219,7 @@ public class Flight implements Serializable {
 			 */
 			if (flightStatusIsAvaliable()) {
 				passagers.put(passenger, seat);
-				if (getPassagersSize() == seatCapacity) {
+				if (getPassagersSize() == data.getSeatCapacity()) {
 					flightStatus = FlightStatus.FULL;
 				}
 			} else {
@@ -274,9 +251,9 @@ public class Flight implements Serializable {
 		 */
 		if(!flightStatusIsTerminate()) {
 			if (passagers.remove(passenger) != null) {
-				if (getPassagersSize() < seatCapacity && flightStatusIsFull()) {
+				if (getPassagersSize() < data.getSeatCapacity() && flightStatusIsFull()) {
 					flightStatus = FlightStatus.AVAILABLE;
-				} else if (getPassagersSize() == seatCapacity) {
+				} else if (getPassagersSize() == data.getSeatCapacity()) {
 					flightStatus = FlightStatus.FULL;
 				}
 				return true;
@@ -300,13 +277,13 @@ public class Flight implements Serializable {
 
 	public int getAvailableSeat() {
 		Collection<Integer> seat = passagers.values();
-		if (seat.size() == seatCapacity) {
+		if (seat.size() == data.getSeatCapacity()) {
 			return -1;
 		}
 		Random random = new Random(this.hashCode() * this.hashCode());
 		int result;
 		do {
-			result = random.nextInt(seatCapacity) + 1;			
+			result = random.nextInt(data.getSeatCapacity()) + 1;			
 		} while (seat.contains(result));
 		return result;
 	}
