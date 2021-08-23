@@ -16,28 +16,21 @@ public class FlightDaemon implements Serializable{
 	public static int ID = 0;
 	private int flightDaemonID;
 	private String flightName;
-	private Date startTime;
-	private Date arriveTime;
-	private int period;
-	private City startCity;
-	private City arriveCity;
-	private int price;
-	private int seatCapacity;
-	private int distance;
+	private FlightDaemonData data = new FlightDaemonData();
 	protected boolean status;
 	protected ArrayList<Flight> children;
 
 	public FlightDaemon(String flightName, Date startTime, Date arriveTime, int period, City startCity, City arriveCity, int price,
 			int seatCapacity, int distance) {
 		this.flightName = flightName;
-		this.startTime = startTime;
-		this.arriveTime = arriveTime;
-		this.period = period;
-		this.startCity = startCity;
-		this.arriveCity = arriveCity;
-		this.price = price;
-		this.seatCapacity = seatCapacity;
-		this.distance = distance;
+		this.data.setStartTime(startTime);
+		this.data.setArriveTime(arriveTime);
+		this.data.setPeriod(period);
+		this.data.setStartCity(startCity);
+		this.data.setArriveCity(arriveCity);
+		this.data.setPrice(price);
+		this.data.setSeatCapacity(seatCapacity);
+		this.data.setDistance(distance);
 		status = true;
 		children = new ArrayList<>();
 		flightDaemonID = FlightDaemon.ID;
@@ -48,31 +41,12 @@ public class FlightDaemon implements Serializable{
 
 	@Override
 	public String toString() {
-		return String.format("%d\t%s\t%-8s\t%-8s\t%s\t%dmin\t%dday\t%d\t%d",
-				flightDaemonID,
-				flightName,
-				startCity,
-				arriveCity,
-				startTime,
-				(arriveTime.getTime() - startTime.getTime())/60000,
-				period/(24*3600*1000),
-				price,
-				seatCapacity)
-				 + (status ? "" : "\tdeleted");
+		return data.toString();
 	}
 	
 	@Override
 	public int hashCode() {
-        int hashCode = 1;
-        hashCode = 31*hashCode + flightName.hashCode();
-        hashCode = 31*hashCode + startCity.hashCode();
-        hashCode = 31*hashCode + startTime.hashCode();
-        hashCode = 31*hashCode + arriveCity.hashCode();
-        hashCode = 31*hashCode + arriveTime.hashCode();
-        hashCode = 31*hashCode + ((Integer)price).hashCode();
-        hashCode = 31*hashCode + ((Integer)seatCapacity).hashCode();
-        hashCode = 31*hashCode + ((Boolean)status).hashCode();
-        return hashCode;
+		return data.hashCode(flightName, status);
 	}
 
 	public boolean flightIsDaemon(Flight flight) {
@@ -123,12 +97,12 @@ public class FlightDaemon implements Serializable{
 	}
 
 	public Date getStartTime() {
-		return startTime;
+		return data.getStartTime();
 	}
 	
 	public void setStartTime(Date startTime) {
-		long shift = startTime.getTime() - this.startTime.getTime();
-		this.startTime = startTime;
+		long shift = startTime.getTime() - this.data.getStartTime().getTime();
+		this.data.setStartTime(startTime);
 		for (Flight flight : children) {
 			if (flightIsDaemon(flight)) {
 				setFlightStartTime(flight, new Date(getFlightStartTime(flight) + shift));
@@ -137,12 +111,12 @@ public class FlightDaemon implements Serializable{
 	}
 
 	public Date getArriveTime() {
-		return arriveTime;
+		return data.getArriveTime();
 	}
 
 	public void setArriveTime(Date arriveTime) {
-		long shift = arriveTime.getTime() - this.arriveTime.getTime();		
-		this.arriveTime = arriveTime;
+		long shift = arriveTime.getTime() - this.data.getArriveTime().getTime();		
+		this.data.setArriveTime(arriveTime);
 		for (Flight flight : children) {
 			if (flightIsDaemon(flight)) {
 				setFlightArriveTime(flight, new Date(getFlightArriveTime(flight) + shift));
@@ -151,19 +125,19 @@ public class FlightDaemon implements Serializable{
 	}
 
 	public int getPeriod() {
-		return period;
+		return data.getPeriod();
 	}
 
 	public void setPeriod(int period) {
-		this.period = period;
+		this.data.setPeriod(period);
 	}
 
 	public City getStartCity() {
-		return startCity;
+		return data.getStartCity();
 	}
 
 	public void setStartCity(City startCity) {
-		this.startCity = startCity;
+		this.data.setStartCity(startCity);
 		for (Flight flight : children) {
 			try {
 				if (flight.isDaemon()) {
@@ -174,11 +148,11 @@ public class FlightDaemon implements Serializable{
 	}
 
 	public City getArriveCity() {
-		return arriveCity;
+		return data.getArriveCity();
 	}
 
 	public void setArriveCity(City arriveCity) {
-		this.arriveCity = arriveCity;
+		this.data.setArriveCity(arriveCity);
 		for (Flight flight : children) {
 			try {
 				if (flight.isDaemon()) {
@@ -189,11 +163,11 @@ public class FlightDaemon implements Serializable{
 	}
 
 	public int getPrice() {
-		return price;
+		return data.getPrice();
 	}
 
 	public void setPrice(int price) {
-		this.price = price;
+		this.data.setPrice(price);
 		for (Flight flight : children) {
 			try {
 				if (flight.isDaemon()) {
@@ -204,11 +178,11 @@ public class FlightDaemon implements Serializable{
 	}
 
 	public int getSeatCapacity() {
-		return seatCapacity;
+		return data.getSeatCapacity();
 	}
 
 	public void setSeatCapacity(int seatCapacity) {
-		this.seatCapacity = seatCapacity;
+		this.data.setSeatCapacity(seatCapacity);
 		for (Flight flight : children) {
 			try {
 				if (flight.isDaemon()) {
@@ -219,11 +193,11 @@ public class FlightDaemon implements Serializable{
 	}
 
 	public int getDistance() {
-		return distance;
+		return data.getDistance();
 	}
 
 	public void setDistance(int distance) {
-		this.distance = distance;
+		this.data.setDistance(distance);
 		for (Flight flight : children) {
 			if (flight.isDaemon()) {
 				flight.setDistance(distance);
