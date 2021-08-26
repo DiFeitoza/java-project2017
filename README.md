@@ -5,7 +5,9 @@ Para localizar os code smells no projeto foi utilizada a ferramenta Jspirit.
 
 Em seguida, foi realizada a coleta de métricas de qualide através da ferramenta Understand para analisar, posteriormente, através de novas coletas, o impacto que a refatorção dos code smells, por tipo e ao todo, teve sobre a qualidade do software.
 
-As métricas de qualidade podem ser acessada pelo link: [Planilha - Métricas de Qualidade](https://docs.google.com/spreadsheets/d/1-aJ1as8LlpIXL8YOXBcI418V53fUXZeb3U4SoJxioVk/edit?usp=sharing) e a tabela a seguir traz detalhes sobre quais code smells foram refatorados ou gerados a cada etapa, [Planilha- Acompanhamento de Code Smells por Refatoração](https://docs.google.com/spreadsheets/d/1pYKPeSrIbQ3KXSNjj1gSZi6O6HElqmqyD0Xoh-7Sujc/edit?usp=sharing).
+As métricas de qualidade podem ser acessada pelo link: [Planilha - Métricas de Qualidade](https://docs.google.com/spreadsheets/d/1-aJ1as8LlpIXL8YOXBcI418V53fUXZeb3U4SoJxioVk/edit?usp=sharing).
+
+A tabela a seguir traz detalhes sobre quais code smells foram refatorados ou gerados a cada etapa, [Planilha- Acompanhamento de Code Smells por Refatoração](https://docs.google.com/spreadsheets/d/1pYKPeSrIbQ3KXSNjj1gSZi6O6HElqmqyD0Xoh-7Sujc/edit?usp=sharing).
 
 Também foi produzido um relatório detalhado do impacto da refatoração nas métricas de qualidade que pode ser acessado pelo link: [Relatório Geral](https://docs.google.com/document/d/1ycL29iPPb8idW0zsHCac0QF3sq7UgibgdLJL9jtAgVs/edit?usp=sharing)
 
